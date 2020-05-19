@@ -1,18 +1,59 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Metody odkrywania wiedzy"
+author: "Rafał Galczak, Wojciech Gruszka"
+output: 
+  pdf_document: default
+  html_notebook: default
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
 ```{r}
-plot(cars)
+library(ggplot2)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+#Projekt
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+## Zagadnienie
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.asdasdasdasdasdasdasdasdasdsa
+___Temat:___ _Lokalna regresja (predykcja wartości funkcji docelowej dla przykładu za pomocą modelu jednorazowego użytku budowanego na podstawie jego „najbliższych sąsiadów”). Eksperymenty z kilkoma różnymialgorytmami do budowania modeli lokalnych. Porównanie z algorytmami regresji dostępnymi w R._
+
+W ramach projektu należało napisać z użyciem pakietu R biblioteki/funkcji, która pozwoli na zastosowanie algorytmów regresji dostępnych w pakiecie R w trybie "lokalnym". sprowadza się to do znalezienia w zbiorze danych (który musi być do tego odpowiednio przygotowany) zbioru trenującego dla danego przykładu z użyciem algorytmu k-najbliższych sąsiadów. Następnie dla takiego zbioru należy zastosować wybrany algorytm regresji z pakietu R. Jako algorytmy budowania modeli należy zastosować dostępne w pakiecie R algorytmy regresjii. Wykorzystane algorytmy zostały opisane w dalszej części.
+
+W ramach projektu miały zostać przeprowadzone testy sprawdzające działanie usyskanego kodu dla kilku algorytmów oraz zbiorów danych.
+
+## Czemu warto zająć się takim zagadnieniem
+Samo zadanie jest dość ciekawe ze względu na to, że istnieją sensowne algorytmy pozwalające na realizację regresji lokalnej takie jak _LOES_ czy _LOWESS_. Jednym z powodów może być tutaj chęć przetestowania sprawności algorytmów regresji w trybie lokalnym i weryfikacji poprawności ich działania. Zastosowanie algorytmów budowanaia modeli regresji w trybie lokalnym pozwala na znaczne zmniejszenie czasu i zasobów potrzebnych do wykonania predykcji, co wynika ze znacznego ograniczenia liczebności danych trenujących do tylko tych z bezpośredniego obszaru (k-najbliższych sąsiadów).
+
+
+## Zbiory danych
+Do projektu musieliśmy wybrać zbiory danych testowych które powinny spełniać wymagania:
+ - liczba atrybutów powinna być odpowiednio duża (>5 atrybutów)
+ - zmienna objaśniana powinna być ciągła lub zachowywać sens w przypadku interpolacji (np. ocena filmu w skali dyskretnej 1-10 zachowuje sens dla wartości 9.81)
+ - zbiór danych powinien zawierać odpowiednio dużo przykładów
+
+Po długich poszukiwaniach sensownych i odpowiednio ciekawych danych do analizy na dostępnych portalach udostępniających zbiory danych (Kaggle, Data.World) zdecydowaliśmy się na następujące propozycje:
+
+### Zbiór dancyh wypożyceń rowerów w systemie wypożyczalni
+Dane pochodzą ze strony: [](https://data.world/data-society/capital-bikeshare-2011-2012).
+
+Zbiór zawiera 17379 przykładów dotyczących wypożyczeń rowerów w systemie wypożyczalni w Waszyngtonie. Dostępne są atrybuty związane z czasem wypożyczenia (dzień tygodnia, godzina), pogodą (temperatura, wiilgotność, prędkość wiatru) oraz liczby wypożyczonych rowerów (użytkownicy zarejsetrowani, użytkownicy niezarejestrowani, użytkownicy łącznie).W szczególności regresję można badać w zakresie łącznej liczby wypożyczeń. Zbiór wydaje się dość ciekawy do zbadania oraz jest wystarczająco dużo.
+
+```{r}
+bikes <- read.csv("https://query.data.world/s/jcpgkqdal2ztirvoahx5dmopkpzr7q", header=TRUE, stringsAsFactors=FALSE)
+```
+
+
+### Zbiór danych 
+
+### Zbiór danych 
+
+## Implementacja
+
+### Model regresji liniowej
+
+### Model drzew regresji
+
+## Metody regresji lokalnej z pakietu R
+### LOESS
+### LOWESS
+
+## Wyniki i porównanie z metodami regresji lokalnej dostępnymi w pakiecie R
