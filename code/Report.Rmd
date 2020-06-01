@@ -48,9 +48,36 @@ bikes <- read.csv("https://query.data.world/s/jcpgkqdal2ztirvoahx5dmopkpzr7q", h
 
 ## Implementacja
 
+!!!TUTAJ JAKIŚ ŁADNY WSTĘP!!!
+
+Funkcja `wrap` opakowuje funkcję do budowania modelu liniowego i dokonuje predykcji z
+użyciem modelu lokalnego wyznaczonego przez funkcję `get.knn`.
+Jako argumenty funkcja `wrap` przyjmuje obiekt danych, parametry `n` i `dist_method`
+przekazowane do funkcji `get.knn` oraz funkcję do opakowania i ew. dodatkowe argumenty dla niej.
+
+Dodatkowo zapewniamy 3 funkcje ułatwiające korzystanie z funkcji `wrap`.
+`default.wrap` zapewnia domyślne wartości dla paramtru `n` i `dist_method`.
+`n` jest ustawione jako 100 i jako `dist_method` przekazywana jest wartość `euclidean`.
+Funkcja ta może zostać użyta jako punkt wyjścia do dostosowywania metaparemtrów algorytmu.
+
+Funkcje `localLinear.wrap` używa funkcji `default.wrap` do obudowania wbudowanej
+funkcji `lm`. Funkcja ta jako dodatkowy argument przyjmuje też formułę, która
+zostanie przekazana do funkcji `lm`.
+
+Tak samo jak `localLiner.wrap` funkcja `regressionTree.wrap` zapewnia proste opakowanie
+dla funkcji `rpart` z biblioteki `rpart`. 
+
+Funkcja `get.knn` przyjmuje zbiór treningowy, wektor `x` i znajduje `n` najbliższych
+sąsiadów w zbiorze treningowym dla wektora `x` używając wbudowanej funkcji `dist` i
+przekazując jej `dist_method`. 
+
 ### Model regresji liniowej
 
+!!! DAĆ WYNIKI !!!
+
 ### Model drzew regresji
+
+!!! DAĆ WYNIKI !!!
 
 ## Metody regresji lokalnej z pakietu R
 ### LOESS

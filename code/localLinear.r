@@ -2,7 +2,7 @@
 # the `regressionTree.wrap` function to work.
 
 private.wrapOne <- function(train, x, n, dist_method, func, ...) {
-    nn_train <- getKnn(train, x, n, dist_method)
+    nn_train <- get.knn(train, x, n, dist_method)
     model <- func(..., data=nn_train)
     predict(model, data.frame(as.list(x)))[[1]]
 }
