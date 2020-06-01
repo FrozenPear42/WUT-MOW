@@ -113,20 +113,53 @@
 \end{Highlighting}
 \end{Shaded}
 
-\#Projekt \#\# Zagadnienie \textbf{\emph{Temat:}} \emph{Lokalna regresja
-(predykcja wartości funkcji docelowej dla przykładu za pomocą modelu
-jednorazowego użytku budowanego na podstawie jego „najbliższych
-sąsiadów''). Eksperymenty z kilkoma różnymialgorytmami do budowania
-modeli lokalnych. Porównanie z algorytmami regresji dostępnymi w R.}
+\#Projekt
 
-W ramach projektu
+\hypertarget{zagadnienie}{%
+\subsection{Zagadnienie}\label{zagadnienie}}
+
+\textbf{\emph{Temat:}} \emph{Lokalna regresja (predykcja wartości
+funkcji docelowej dla przykładu za pomocą modelu jednorazowego użytku
+budowanego na podstawie jego „najbliższych sąsiadów''). Eksperymenty z
+kilkoma różnymialgorytmami do budowania modeli lokalnych. Porównanie z
+algorytmami regresji dostępnymi w R.}
+
+W ramach projektu należało napisać z użyciem pakietu R
+biblioteki/funkcji, która pozwoli na zastosowanie algorytmów regresji
+dostępnych w pakiecie R w trybie ``lokalnym''. sprowadza się to do
+znalezienia w zbiorze danych (który musi być do tego odpowiednio
+przygotowany) zbioru trenującego dla danego przykładu z użyciem
+algorytmu k-najbliższych sąsiadów. Następnie dla takiego zbioru należy
+zastosować wybrany algorytm regresji z pakietu R. Jako algorytmy
+budowania modeli należy zastosować dostępne w pakiecie R algorytmy
+regresjii. Wykorzystane algorytmy zostały opisane w dalszej części.
+
+W ramach projektu miały zostać przeprowadzone testy sprawdzające
+działanie usyskanego kodu dla kilku algorytmów oraz zbiorów danych.
 
 \hypertarget{czemu-warto-zajux105ux107-siux119-takim-zagadnieniem}{%
 \subsection{Czemu warto zająć się takim
 zagadnieniem}\label{czemu-warto-zajux105ux107-siux119-takim-zagadnieniem}}
 
+Samo zadanie jest dość ciekawe ze względu na to, że istnieją sensowne
+algorytmy pozwalające na realizację regresji lokalnej takie jak
+\emph{LOES} czy \emph{LOWESS}. Jednym z powodów może być tutaj chęć
+przetestowania sprawności algorytmów regresji w trybie lokalnym i
+weryfikacji poprawności ich działania. Zastosowanie algorytmów
+budowanaia modeli regresji w trybie lokalnym pozwala na znaczne
+zmniejszenie czasu i zasobów potrzebnych do wykonania predykcji, co
+wynika ze znacznego ograniczenia liczebności danych trenujących do tylko
+tych z bezpośredniego obszaru (k-najbliższych sąsiadów).
+
 \hypertarget{zbiory-danych}{%
 \subsection{Zbiory danych}\label{zbiory-danych}}
+
+Do projektu musieliśmy wybrać zbiory danych testowych które powinny
+spełniać wymagania: - liczba atrybutów powinna być odpowiednio duża
+(\textgreater5 atrybutów) - zmienna objaśniana powinna być ciągła lub
+zachowywać sens w przypadku interpolacji (np. ocena filmu w skali
+dyskretnej 1-10 zachowuje sens dla wartości 9.81) - zbiór danych
+powinien zawierać odpowiednio dużo przykładów
 
 Po długich poszukiwaniach sensownych i odpowiednio ciekawych danych do
 analizy na dostępnych portalach udostępniających zbiory danych (Kaggle,
@@ -137,7 +170,7 @@ Data.World) zdecydowaliśmy się na następujące propozycje:
 wypożyczalni}\label{zbiuxf3r-dancyh-wypoux17cyceux144-roweruxf3w-w-systemie-wypoux17cyczalni}}
 
 Dane pochodzą ze strony:
-\href{https://data.world/data-society/capital-bikeshare-2011-2012}{}.
+\href{}{https://data.world/data-society/capital-bikeshare-2011-2012}.
 
 Zbiór zawiera 17379 przykładów dotyczących wypożyczeń rowerów w systemie
 wypożyczalni w Waszyngtonie. Dostępne są atrybuty związane z czasem
@@ -154,16 +187,94 @@ wystarczająco dużo.
 \end{Highlighting}
 \end{Shaded}
 
-Add a new chunk by clicking the \emph{Insert Chunk} button on the
-toolbar or by pressing \emph{Ctrl+Alt+I}.
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{max}\NormalTok{(bikes}\OperatorTok{$}\NormalTok{Season)}
+\end{Highlighting}
+\end{Shaded}
 
-When you save the notebook, an HTML file containing the code and output
-will be saved alongside it (click the \emph{Preview} button or press
-\emph{Ctrl+Shift+K} to preview the HTML file).
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
 
-The preview shows you a rendered HTML copy of the contents of the
-editor. Consequently, unlike \emph{Knit}, \emph{Preview} does not run
-any R code chunks. Instead, the output of the chunk when it was last run
-in the editor is displayed.asdasdasdasdasdasdasdasdasdsa
+\hypertarget{zbiuxf3r-danych-uux17cywanych-samochoduxf3w}{%
+\subsubsection{Zbiór danych używanych
+samochodów}\label{zbiuxf3r-danych-uux17cywanych-samochoduxf3w}}
+
+Dane pochodzą ze strony:
+\href{}{https://www.kaggle.com/c/usedcarvaluation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cars <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"cars.csv"}\NormalTok{, }\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{stringsAsFactors=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{zbiuxf3r-danych-nieruchomoux15bci}{%
+\subsubsection{Zbiór danych
+nieruchomości}\label{zbiuxf3r-danych-nieruchomoux15bci}}
+
+Dane pochodzą ze strony:
+\href{}{https://www.kaggle.com/quantbruce/real-estate-price-prediction}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{real_estate <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"real_estate.csv"}\NormalTok{, }\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{stringsAsFactors=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Dane zostały wybrane ze względu na ciekaw
+
+\hypertarget{implementacja}{%
+\subsection{Implementacja}\label{implementacja}}
+
+\hypertarget{normalizacja-i-denormalizacja-danych}{%
+\subsubsection{Normalizacja i denormalizacja
+danych}\label{normalizacja-i-denormalizacja-danych}}
+
+W celu poprawnego zastosowania metody kNN (k najbliższych sąsiadów) do
+ogreślenia zbioru terningowego dane muszą być uprzednio znormalizowane.
+Jest to wymagane, ponieważ algorytm kNN bazuje na funkcji odległości.
+Brak normalizacji sprawiłby, że jeden z atrybutów byłby wyróżniony ze
+względu na większy zakres wartosci. Stosuje się trzy rozdzaje
+normalizacji: - Liniowe przeskalowanie wartości do przedizału \([0-1]\)
+dla atrybutów ograniczonych (o ustalonych wartościach minimalnej i
+maksymalnej) - Przeskalowanie z użyciem rozkładu normalnego o średniej
+\(Ex = 0\) i wariancji \(\sigma^{2} = 1\). - dla wartości
+nieograniczonych - Przydzielenie wartości \([0-1]\) rozłożonych
+równomiernie dla atrybutów dyskretnych
+
+W pakiecie taka normalizacja może zostać wykonana automatycznie przez
+zastosowanie funckcji ``.
+
+\hypertarget{funkcja-knn-k-najbliux17cszych-sux105siaduxf3w}{%
+\subsubsection{Funkcja kNN (k najbliższych
+sąsiadów)}\label{funkcja-knn-k-najbliux17cszych-sux105siaduxf3w}}
+
+Funkcja \texttt{getKnn} pozwala na wybranie spośród wskazanego zbioru
+
+\hypertarget{model-regresji-liniowej}{%
+\subsubsection{Model regresji liniowej}\label{model-regresji-liniowej}}
+
+\hypertarget{model-drzew-regresji}{%
+\subsubsection{Model drzew regresji}\label{model-drzew-regresji}}
+
+\hypertarget{uux17cycie-pakietu}{%
+\subsection{Użycie pakietu}\label{uux17cycie-pakietu}}
+
+\hypertarget{metody-regresji-lokalnej-z-pakietu-r}{%
+\subsection{Metody regresji lokalnej z pakietu
+R}\label{metody-regresji-lokalnej-z-pakietu-r}}
+
+\hypertarget{loess}{%
+\subsubsection{LOESS}\label{loess}}
+
+\hypertarget{lowess}{%
+\subsubsection{LOWESS}\label{lowess}}
+
+\hypertarget{wyniki-i-poruxf3wnanie-z-metodami-regresji-lokalnej-dostux119pnymi-w-pakiecie-r}{%
+\subsection{Wyniki i porównanie z metodami regresji lokalnej dostępnymi
+w pakiecie
+R}\label{wyniki-i-poruxf3wnanie-z-metodami-regresji-lokalnej-dostux119pnymi-w-pakiecie-r}}
 
 \end{document}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7440 64-bit) (preloaded format=pdflatex 2020.5.19)  19 MAY 2020 21:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7440 64-bit) (preloaded format=pdflatex 2020.5.19)  31 MAY 2020 20:04
 entering extended mode
 **./Report.tex
 (Report.tex
@@ -142,4 +142,3 @@ Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
 ! The log file hopefully contains the information to get MiKTeX going again:
 
 !   C:\Users\Wojciech\AppData\Local\MiKTeX\2.9\miktex\log\pdflatex.log
-! pdflatex: major issue: So far, you have not checked for MiKTeX updates.

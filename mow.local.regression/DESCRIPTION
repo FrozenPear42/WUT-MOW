@@ -1,0 +1,20 @@
+Package: mow.local.regression
+Title: Local linear regression package
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Wojciech",
+           family = "Gruszka",
+           role = c("aut", "cre"),
+           email = "wojciech@gruszka.eu")
+    person(given = "Rafał",
+           family = "Galczak",
+           role = c("aut", "cre"),
+           email = "rafal@galczak.pl")
+Description: That package allows you to use global regression algorithms in local spectrum (determined by kNN algorithm). Package takes care of data normalization.
+License: `use_mit_license()`
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Imports:
+    rpart
