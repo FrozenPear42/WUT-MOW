@@ -33,18 +33,53 @@ Do projektu musieliśmy wybrać zbiory danych testowych które powinny spełnia�
 Po długich poszukiwaniach sensownych i odpowiednio ciekawych danych do analizy na dostępnych portalach udostępniających zbiory danych (Kaggle, Data.World) zdecydowaliśmy się na następujące propozycje:
 
 ### Zbiór dancyh wypożyceń rowerów w systemie wypożyczalni
-Dane pochodzą ze strony: [](https://data.world/data-society/capital-bikeshare-2011-2012).
+Dane pochodzą ze strony: [https://data.world/data-society/capital-bikeshare-2011-2012]().
 
-Zbiór zawiera 17379 przykładów dotyczących wypożyczeń rowerów w systemie wypożyczalni w Waszyngtonie. Dostępne są atrybuty związane z czasem wypożyczenia (dzień tygodnia, godzina), pogodą (temperatura, wiilgotność, prędkość wiatru) oraz liczby wypożyczonych rowerów (użytkownicy zarejsetrowani, użytkownicy niezarejestrowani, użytkownicy łącznie).W szczególności regresję można badać w zakresie łącznej liczby wypożyczeń. Zbiór wydaje się dość ciekawy do zbadania oraz jest wystarczająco dużo.
+Zbiór zawiera 17379 przykładów dotyczących wypożyczeń rowerów w systemie wypożyczalni w Waszyngtonie. Dostępne są atrybuty związane z czasem wypożyczenia (dzień tygodnia, godzina), pogodą (temperatura, wiilgotność, prędkość wiatru) oraz liczby wypożyczonych rowerów (użytkownicy zarejsetrowani, użytkownicy niezarejestrowani, użytkownicy łącznie).W szczególności regresję można badać w zakresie łącznej liczby wypożyczeń. Zbiór wydaje się dość ciekawy do zbadania oraz jest wystarczająco duży.
 
 ```{r}
 bikes <- read.csv("https://query.data.world/s/jcpgkqdal2ztirvoahx5dmopkpzr7q", header=TRUE, stringsAsFactors=FALSE)
+bikes$Casual.Users <- NULL
+bikes$Registered.Users <- NULL
+
 ```
 
 
-### Zbiór danych 
+### Zbiór danych używanych samochodów
+Dane pochodzą ze strony: [https://www.kaggle.com/c/usedcarvaluation]()
 
-### Zbiór danych 
+Zbiór zawiera 70000 obserwacji (przykładów) dotyczących cen sprzedaży samochodów osobowych o określonej marce, wieku, pojemności silnika, mocy, przejechanej odlegółości oraz liczby poprzednich właścicieli. Wszystkie atrybuty poza marką są atrybutami ciągłymi (bądź dającymi się uciąglić). Atrybutem przywidywanym dla tego zbioru jest wartość samochodu.
+
+```{r}
+cars <- read.csv("cars.csv", header=TRUE, stringsAsFactors=FALSE)
+cars$year <- NULL
+```
+
+
+### Zbiór danych nieruchomości
+Dane pochodzą ze strony: [https://www.kaggle.com/quantbruce/real-estate-price-prediction]()
+
+Zbiór zawiera 414 obserwacji dotyczących sprzedaży nieruchomości (domów i mieszkań) opisanych z użyciem daty transakcji, wieku nieruchomości, odległości od przystanku, liczby skelpów w okolicy, położenia geograficznego oraz ceny za jednostkę powierzchni. W przypadku tych danych będziemy przewidywać cenę za jednostkę powierzchni.
+
+```{r}
+real_estate <- read.csv("real_estate.csv", header=TRUE, stringsAsFactors=FALSE)
+real_estate$No <- NULL
+```
+
+=======
+### Normalizacja i denormalizacja danych
+W celu poprawnego zastosowania metody kNN (k najbliższych sąsiadów) do ogreślenia zbioru terningowego dane muszą być uprzednio znormalizowane. Jest to wymagane, ponieważ algorytm kNN bazuje na funkcji odległości. Brak normalizacji sprawiłby, że jeden z atrybutów byłby wyróżniony ze względu na większy zakres wartosci. Stosuje się trzy rozdzaje normalizacji:
+ - Liniowe przeskalowanie wartości do przedizału $[0-1]$ dla atrybutów ograniczonych (o ustalonych wartościach minimalnej i maksymalnej)
+ - Przeskalowanie z użyciem rozkładu normalnego o średniej $Ex = 0$ i wariancji $\sigma^{2} = 1$. - dla wartości nieograniczonych
+ - Przydzielenie wartości $[0-1]$ rozłożonych równomiernie dla atrybutów dyskretnych
+ 
+W pakiecie taka normalizacja może zostać wykonana automatycznie przez zastosowanie funckcji ``.
+
+```{r}
+source('normalizeChrVec.r')
+source('normalizeDataFrame.r')
+cars_norm <- normalizeDataFrame(cars, test)
+```
 
 ## Implementacja
 
@@ -78,6 +113,8 @@ przekazując jej `dist_method`.
 ### Model drzew regresji
 
 !!! DAĆ WYNIKI !!!
+
+## Użycie pakietu
 
 ## Metody regresji lokalnej z pakietu R
 ### LOESS
