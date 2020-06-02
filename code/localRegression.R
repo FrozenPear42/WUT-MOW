@@ -1,5 +1,6 @@
 library(rpart)
 library(purrr)
+library(FNN)
 
 # LocalARegressionModel S4 class generator
 # Reserved for internal use, to create LocalRegressionModel use `createLocalRegressionModel` function
@@ -15,6 +16,9 @@ createLocalRegressionModel <- function(dataset, normalizationTypes) {
   LocalRegressionModel(dataset=dataset, normalizedDataset=norm[[1]], normalizationParams=norm[[2]])
 }
 
+#
+#
+#
 normalizeVector <- function(localModel, v) {
   for(i in 1:length(v))
   {
@@ -33,19 +37,16 @@ normalizeVector <- function(localModel, v) {
   return(v)
 }
 
-
-library(FNN)
-
-private.wrapOne <- function(localModel, x, n, distanceMethod, func, ...) {
+#
+#
+#
+private.wrapOne <- function(localModel, x, n, knnAlgorithm, func, ...) {
   normalizedX <- normalizeVector(localModel, x)
   normalizedX <- data.frame(as.list(normalizedX))
-  normalizedX$house.price.of.unit.area <- NULL
-  localModel@normalizedDataset <- NULL
 
-  #nn_train <- getKnn(localModel@normalizedDataset, normalizedX, n, distanceMethod)
+  # TODO: normalize length
 
-  nn <- get.knnx(localModel@normalizedDataset, normalizedX, k=n)
-
+  nn <- get.knnx(localModel@normalizedDataset, normalizedX, k=n, algorithm=knnAlgorithm)
   indexes <-unlist(nn$nn.index[1,], use.names = FALSE)
   nn_train <- localModel@normalizedDataset[indexes,]
   model <- func(..., data=nn_train)
@@ -67,14 +68,14 @@ private.wrapOne <- function(localModel, x, n, distanceMethod, func, ...) {
 #'
 #' For usage examples look at implementation of
 #' `localLinear.wrap` and `regressionTree.wrap` functions.
-wrap <- function(localModel, test, n, dist_method, func, ...) {
-  apply(test, 1, function(row) private.wrapOne(localModel, row, n, dist_method, func, ...))
+wrap <- function(localModel, test, n, knnAlgorithm, func, formula, ...) {
+  apply(test, 1, function(row) private.wrapOne(localModel, row, n, knnAlgorithm, func, formula, ...))
 }
 
 #' Calls `wrap` function with predefined arguments
 #' for the KNN-alghoritm (n = 100 and dist_method="euclidean".
-default.wrap <- function(localModel, test, func, ...) {
-  wrap(localModel, test, 100, "euclidean", func, ...)
+default.wrap <- function(localModel, test, func, formula, ...) {
+  wrap(localModel, test, 100, "cover-tree", func, formula, ...)
 }
 
 #' Pedict values in `test` using `formula` with
@@ -89,26 +90,11 @@ localLinear.wrap <- function(localModel, test, formula) {
 #'
 #' As a method "anove" is passed to the `rpart` function.
 regressionTree.wrap <- function(localModel, test, formula) {
-  default.wrap(localModel, test, rpart, formula=formula, method="anova")
+  default.wrap(localModel, test, rpart, formula, method="anova")
 }
 
 
-#' Resturns matrix containing `n` nearest neighbours of sample `x`
-#' from dataset `train` using builtin `dist` method with
-#' `dist_method` to compute distances.
-getKnn <- function(train, x, n, dist_method="euclidean") {
-  train_with_x <- rbind(x, train, deparse.level=0)
-  print(train_with_x)
-  distances <- dist(train_with_x, method=dist_method)
-  print(distances)
-  distances <- as.matrix(distances)[1,] # distences from the first row to the ech
-  distances <- distances[-1] # skip the first distance to itself
-  names(distances) <- strtoi(names(distances))-1 # get indexes in the train set
-  distances <- sort(distances)
-  n_indexes <- strtoi(names(distances)[1:n])
-  train[n_indexes, ]
-}
-
+#
 #
 #
 normalizeChrVec <- function(v) {
