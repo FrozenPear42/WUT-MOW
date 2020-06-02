@@ -85,16 +85,14 @@ stripDependentVariable <- function(dataset, formula) {
   predict(model, normalizedX)
 }
 
+#' Wrap regression model
+#'
 #' Predict values for `test` based on the `train` set with
 #' function `func` calculating regression model on
 #' some local data of length `n` provided by KNN-algorithm
-#'
 #' The `func` will be called with `data` argument already provided
 #' based on the `train` set. Any additional arguments can be
 #' passed with `...` variadic argument.
-#'
-#' If you are passing a formula then the `test` set should not
-#' have predicted column.
 #'
 #' @param localModel LocalRegressionModel object builded with training data
 #' @param test dataframe with test data for prediction
