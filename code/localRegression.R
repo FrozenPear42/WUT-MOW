@@ -40,7 +40,19 @@ normalizeVector <- function(localModel, v) {
 #
 #
 #
-private.wrapOne <- function(localModel, x, n, knnAlgorithm, func, ...) {
+stripDependentVariable <- function(dataset, formula) {
+  depVar <- all.vars(formula)[1]
+  print(depVar)
+  stripped <- dataset[depVar]
+  dataset[depVar] <- NULL
+
+  list(dataset, stripped)
+}
+
+#
+#
+#
+private.wrapOne <- function(localModel, x, n, knnAlgorithm, func, formula, ...) {
   normalizedX <- normalizeVector(localModel, x)
   normalizedX <- data.frame(as.list(normalizedX))
 
