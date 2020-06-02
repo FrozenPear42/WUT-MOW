@@ -1753,62 +1753,41 @@ summary {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubGlicmFyeShnZ3Bsb3QyKVxuYGBgXG5gYGAifQ== -->
-<pre class="r"><code>```r
-library(ggplot2)</code></pre>
-<pre><code>
-&lt;!-- rnb-source-end --&gt;
-
-&lt;!-- rnb-chunk-end --&gt;
-
-
-&lt;!-- rnb-text-begin --&gt;
-
-
-#Projekt
-
-## Zagadnienie
-
-___Temat:___ _Lokalna regresja (predykcja wartości funkcji docelowej dla przykładu za pomocą modelu jednorazowego użytku budowanego na podstawie jego „najbliższych sąsiadów”). Eksperymenty z kilkoma różnymialgorytmami do budowania modeli lokalnych. Porównanie z algorytmami regresji dostępnymi w R._
-
-W ramach projektu należało napisać z użyciem pakietu R biblioteki/funkcji, która pozwoli na zastosowanie algorytmów regresji dostępnych w pakiecie R w trybie &quot;lokalnym&quot;. sprowadza się to do znalezienia w zbiorze danych (który musi być do tego odpowiednio przygotowany) zbioru trenującego dla danego przykładu z użyciem algorytmu k-najbliższych sąsiadów. Następnie dla takiego zbioru należy zastosować wybrany algorytm regresji z pakietu R. Jako algorytmy budowania modeli należy zastosować dostępne w pakiecie R algorytmy regresjii. Wykorzystane algorytmy zostały opisane w dalszej części.
-
-W ramach projektu miały zostać przeprowadzone testy sprawdzające działanie usyskanego kodu dla kilku algorytmów oraz zbiorów danych.
-
-## Czemu warto zająć się takim zagadnieniem
-Samo zadanie jest dość ciekawe ze względu na to, że istnieją sensowne algorytmy pozwalające na realizację regresji lokalnej takie jak _LOES_ czy _LOWESS_. Jednym z powodów może być tutaj chęć przetestowania sprawności algorytmów regresji w trybie lokalnym i weryfikacji poprawności ich działania. Zastosowanie algorytmów budowanaia modeli regresji w trybie lokalnym pozwala na znaczne zmniejszenie czasu i zasobów potrzebnych do wykonania predykcji, co wynika ze znacznego ograniczenia liczebności danych trenujących do tylko tych z bezpośredniego obszaru (k-najbliższych sąsiadów).
-
-
-## Zbiory danych
-Do projektu musieliśmy wybrać zbiory danych testowych które powinny spełniać wymagania:
- - liczba atrybutów powinna być odpowiednio duża (&gt;5 atrybutów)
- - zmienna objaśniana powinna być ciągła lub zachowywać sens w przypadku interpolacji (np. ocena filmu w skali dyskretnej 1-10 zachowuje sens dla wartości 9.81)
- - zbiór danych powinien zawierać odpowiednio dużo przykładów
-
-Po długich poszukiwaniach sensownych i odpowiednio ciekawych danych do analizy na dostępnych portalach udostępniających zbiory danych (Kaggle, Data.World) zdecydowaliśmy się na następujące propozycje:
-
-### Zbiór dancyh wypożyceń rowerów w systemie wypożyczalni
-Dane pochodzą ze strony: [https://data.world/data-society/capital-bikeshare-2011-2012]().
-
-Zbiór zawiera 17379 przykładów dotyczących wypożyczeń rowerów w systemie wypożyczalni w Waszyngtonie. Dostępne są atrybuty związane z czasem wypożyczenia (dzień tygodnia, godzina), pogodą (temperatura, wiilgotność, prędkość wiatru) oraz liczby wypożyczonych rowerów (użytkownicy zarejsetrowani, użytkownicy niezarejestrowani, użytkownicy łącznie).W szczególności regresję można badać w zakresie łącznej liczby wypożyczeń. Zbiór wydaje się dość ciekawy do zbadania oraz jest wystarczająco duży.
-
-
-&lt;!-- rnb-text-end --&gt;
-
-
-&lt;!-- rnb-chunk-begin --&gt;
-
-
-&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmlrZXMgPC0gcmVhZC5jc3YoXCJodHRwczovL3F1ZXJ5LmRhdGEud29ybGQvcy9qY3Bna3FkYWwyenRpcnZvYWh4NWRtb3BrcHpyN3FcIiwgaGVhZGVyPVRSVUUsIHN0cmluZ3NBc0ZhY3RvcnM9RkFMU0UpXG5iaWtlcyRDYXN1YWwuVXNlcnMgPC0gTlVMTFxuYmlrZXMkUmVnaXN0ZXJlZC5Vc2VycyA8LSBOVUxMXG5cbmBgYCJ9 --&gt;
-
-```r
-bikes &lt;- read.csv(&quot;https://query.data.world/s/jcpgkqdal2ztirvoahx5dmopkpzr7q&quot;, header=TRUE, stringsAsFactors=FALSE)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShnZ3Bsb3QyKVxuYGBgIn0= -->
+<pre class="r"><code>library(ggplot2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>#Projekt</p>
+<div id="zagadnienie" class="section level2">
+<h2>Zagadnienie</h2>
+<p><strong><em>Temat:</em></strong> <em>Lokalna regresja (predykcja wartości funkcji docelowej dla przykładu za pomocą modelu jednorazowego użytku budowanego na podstawie jego „najbliższych sąsiadów”). Eksperymenty z kilkoma różnymialgorytmami do budowania modeli lokalnych. Porównanie z algorytmami regresji dostępnymi w R.</em></p>
+<p>W ramach projektu należało napisać z użyciem pakietu R biblioteki/funkcji, która pozwoli na zastosowanie algorytmów regresji dostępnych w pakiecie R w trybie “lokalnym”. sprowadza się to do znalezienia w zbiorze danych (który musi być do tego odpowiednio przygotowany) zbioru trenującego dla danego przykładu z użyciem algorytmu k-najbliższych sąsiadów. Następnie dla takiego zbioru należy zastosować wybrany algorytm regresji z pakietu R. Jako algorytmy budowania modeli należy zastosować dostępne w pakiecie R algorytmy regresjii. Wykorzystane algorytmy zostały opisane w dalszej części.</p>
+<p>W ramach projektu miały zostać przeprowadzone testy sprawdzające działanie usyskanego kodu dla kilku algorytmów oraz zbiorów danych.</p>
+</div>
+<div id="czemu-warto-zająć-się-takim-zagadnieniem" class="section level2">
+<h2>Czemu warto zająć się takim zagadnieniem</h2>
+<p>Samo zadanie jest dość ciekawe ze względu na to, że istnieją sensowne algorytmy pozwalające na realizację regresji lokalnej takie jak <em>LOES</em> czy <em>LOWESS</em>. Jednym z powodów może być tutaj chęć przetestowania sprawności algorytmów regresji w trybie lokalnym i weryfikacji poprawności ich działania. Zastosowanie algorytmów budowanaia modeli regresji w trybie lokalnym pozwala na znaczne zmniejszenie czasu i zasobów potrzebnych do wykonania predykcji, co wynika ze znacznego ograniczenia liczebności danych trenujących do tylko tych z bezpośredniego obszaru (k-najbliższych sąsiadów).</p>
+</div>
+<div id="zbiory-danych" class="section level2">
+<h2>Zbiory danych</h2>
+<p>Do projektu musieliśmy wybrać zbiory danych testowych które powinny spełniać wymagania: - liczba atrybutów powinna być odpowiednio duża (&gt;5 atrybutów) - zmienna objaśniana powinna być ciągła lub zachowywać sens w przypadku interpolacji (np. ocena filmu w skali dyskretnej 1-10 zachowuje sens dla wartości 9.81) - zbiór danych powinien zawierać odpowiednio dużo przykładów</p>
+<p>Po długich poszukiwaniach sensownych i odpowiednio ciekawych danych do analizy na dostępnych portalach udostępniających zbiory danych (Kaggle, Data.World) zdecydowaliśmy się na następujące propozycje:</p>
+<div id="zbiór-dancyh-wypożyceń-rowerów-w-systemie-wypożyczalni" class="section level3">
+<h3>Zbiór dancyh wypożyceń rowerów w systemie wypożyczalni</h3>
+<p>Dane pochodzą ze strony: <a href>https://data.world/data-society/capital-bikeshare-2011-2012</a>.</p>
+<p>Zbiór zawiera 17379 przykładów dotyczących wypożyczeń rowerów w systemie wypożyczalni w Waszyngtonie. Dostępne są atrybuty związane z czasem wypożyczenia (dzień tygodnia, godzina), pogodą (temperatura, wiilgotność, prędkość wiatru) oraz liczby wypożyczonych rowerów (użytkownicy zarejsetrowani, użytkownicy niezarejestrowani, użytkownicy łącznie).W szczególności regresję można badać w zakresie łącznej liczby wypożyczeń. Zbiór wydaje się dość ciekawy do zbadania oraz jest wystarczająco duży.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmlrZXMgPC0gcmVhZC5jc3YoXCJodHRwczovL3F1ZXJ5LmRhdGEud29ybGQvcy9qY3Bna3FkYWwyenRpcnZvYWh4NWRtb3BrcHpyN3FcIiwgaGVhZGVyPVRSVUUsIHN0cmluZ3NBc0ZhY3RvcnM9RkFMU0UpXG5iaWtlcyRDYXN1YWwuVXNlcnMgPC0gTlVMTFxuYmlrZXMkUmVnaXN0ZXJlZC5Vc2VycyA8LSBOVUxMXG5cbmBgYCJ9 -->
+<pre class="r"><code>bikes &lt;- read.csv(&quot;https://query.data.world/s/jcpgkqdal2ztirvoahx5dmopkpzr7q&quot;, header=TRUE, stringsAsFactors=FALSE)
 bikes$Casual.Users &lt;- NULL
 bikes$Registered.Users &lt;- NULL
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
 <div id="zbiór-danych-używanych-samochodów" class="section level3">
 <h3>Zbiór danych używanych samochodów</h3>
 <p>Dane pochodzą ze strony: <a href>https://www.kaggle.com/c/usedcarvaluation</a></p>
@@ -1834,32 +1813,132 @@ real_estate$No &lt;- NULL</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="implementacja" class="section level2">
-<h2>Implementacja</h2>
-<div id="normalizacja-i-denormalizacja-danych" class="section level3">
-<h3>Normalizacja i denormalizacja danych</h3>
-<p>W celu poprawnego zastosowania metody kNN (k najbliższych sąsiadów) do ogreślenia zbioru terningowego dane muszą być uprzednio znormalizowane. Jest to wymagane, ponieważ algorytm kNN bazuje na funkcji odległości. Brak normalizacji sprawiłby, że jeden z atrybutów byłby wyróżniony ze względu na większy zakres wartosci. Stosuje się trzy rozdzaje normalizacji: - Liniowe przeskalowanie wartości do przedizału <span class="math inline">\([0-1]\)</span> dla atrybutów ograniczonych (o ustalonych wartościach minimalnej i maksymalnej) - Przeskalowanie z użyciem rozkładu normalnego o średniej <span class="math inline">\(Ex = 0\)</span> i wariancji <span class="math inline">\(\sigma^{2} = 1\)</span>. - dla wartości nieograniczonych - Przydzielenie wartości <span class="math inline">\([0-1]\)</span> rozłożonych równomiernie dla atrybutów dyskretnych</p>
+<p>======= ### Normalizacja i denormalizacja danych W celu poprawnego zastosowania metody kNN (k najbliższych sąsiadów) do ogreślenia zbioru terningowego dane muszą być uprzednio znormalizowane. Jest to wymagane, ponieważ algorytm kNN bazuje na funkcji odległości. Brak normalizacji sprawiłby, że jeden z atrybutów byłby wyróżniony ze względu na większy zakres wartosci. Stosuje się trzy rozdzaje normalizacji: - Liniowe przeskalowanie wartości do przedizału <span class="math inline">\([0-1]\)</span> dla atrybutów ograniczonych (o ustalonych wartościach minimalnej i maksymalnej) - Przeskalowanie z użyciem rozkładu normalnego o średniej <span class="math inline">\(Ex = 0\)</span> i wariancji <span class="math inline">\(\sigma^{2} = 1\)</span>. - dla wartości nieograniczonych - Przydzielenie wartości <span class="math inline">\([0-1]\)</span> rozłożonych równomiernie dla atrybutów dyskretnych</p>
 <p>W pakiecie taka normalizacja może zostać wykonana automatycznie przez zastosowanie funckcji ``.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKCdub3JtYWxpemVDaHJWZWMucicpXG5zb3VyY2UoJ25vcm1hbGl6ZURhdGFGcmFtZS5yJylcbmNhcnNfbm9ybSA8LSBub3JtYWxpemVEYXRhRnJhbWUoY2FycywgdGVzdClcbmBgYCJ9 -->
-<pre class="r"><code>source(&#39;normalizeChrVec.r&#39;)
-source(&#39;normalizeDataFrame.r&#39;)
-cars_norm &lt;- normalizeDataFrame(cars, test)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKCdsb2NhbFJlZ3Jlc3Npb24uUicpXG5yc19tb2RlbCA8LSBjcmVhdGVMb2NhbFJlZ3Jlc3Npb25Nb2RlbChyZWFsX2VzdGF0ZSwgbGlzdChcIm1pbm1heFwiLFwibWlubWF4XCIsXCJtaW5tYXhcIixcIm1pbm1heFwiLFwibWlubWF4XCIsXCJtaW5tYXhcIixcIm9taXRcIikpXG53cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDEsIFwiY292ZXJfdHJlZVwiLCBsbSwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>source(&#39;localRegression.R&#39;)
+rs_model &lt;- createLocalRegressionModel(real_estate, list(&quot;minmax&quot;,&quot;minmax&quot;,&quot;minmax&quot;,&quot;minmax&quot;,&quot;minmax&quot;,&quot;minmax&quot;,&quot;omit&quot;))
+wrap(rs_model, real_estate[1,], 1, &quot;cover_tree&quot;, lm, house.price.of.unit.area ~ house.age)[[1]]</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicHJlZGljdGlvbiBmcm9tIGEgcmFuay1kZWZpY2llbnQgZml0IG1heSBiZSBtaXNsZWFkaW5nXG4ifQ== -->
+<pre><code>prediction from a rank-deficient fit may be misleading</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM3LjlcbiJ9 -->
+<pre><code>[1] 37.9</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAxMCwgXCJjb3Zlcl90cmVlXCIsIGxtLCBob3VzZS5wcmljZS5vZi51bml0LmFyZWEgfiBob3VzZS5hZ2UpW1sxXV1cbmBgYCJ9 -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 10, &quot;cover_tree&quot;, lm, house.price.of.unit.area ~ house.age)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQxLjM1MTMyXG4ifQ== -->
+<pre><code>[1] 41.35132</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAxMDAsIFwiY292ZXJfdHJlZVwiLCBsbSwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 100, &quot;cover_tree&quot;, lm, house.price.of.unit.area ~ house.age)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQyLjIyNDc1XG4ifQ== -->
+<pre><code>[1] 42.22475</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAyMDAsIFwiY292ZXJfdHJlZVwiLCBsbSwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 200, &quot;cover_tree&quot;, lm, house.price.of.unit.area ~ house.age)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQwLjY5NTAxXG4ifQ== -->
+<pre><code>[1] 40.69501</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCA0MTQsIFwiY292ZXJfdHJlZVwiLCBsbSwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 414, &quot;cover_tree&quot;, lm, house.price.of.unit.area ~ house.age)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM0LjM4NzA3XG4ifQ== -->
+<pre><code>[1] 34.38707</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKCdsb2NhbFJlZ3Jlc3Npb24uUicpXG5yc19tb2RlbCA8LSBjcmVhdGVMb2NhbFJlZ3Jlc3Npb25Nb2RlbChyZWFsX2VzdGF0ZSwgbGlzdChcIm1pbm1heFwiLFwibWlubWF4XCIsXCJtaW5tYXhcIixcIm1pbm1heFwiLFwibWlubWF4XCIsXCJtaW5tYXhcIixcIm9taXRcIikpXG53cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDEsIFwiY292ZXJfdHJlZVwiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9XCJhbm92YVwiKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>source(&#39;localRegression.R&#39;)
+rs_model &lt;- createLocalRegressionModel(real_estate, list(&quot;minmax&quot;,&quot;minmax&quot;,&quot;minmax&quot;,&quot;minmax&quot;,&quot;minmax&quot;,&quot;minmax&quot;,&quot;omit&quot;))
+wrap(rs_model, real_estate[1,], 1, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM3LjlcbiJ9 -->
+<pre><code>[1] 37.9</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAxMCwgXCJjb3Zlcl90cmVlXCIsIHJwYXJ0LCBob3VzZS5wcmljZS5vZi51bml0LmFyZWEgfiBob3VzZS5hZ2UsIG1ldGhvZD1cImFub3ZhXCIpW1sxXV1cbmBgYCJ9 -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 10, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQyLjE2XG4ifQ== -->
+<pre><code>[1] 42.16</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAxMDAsIFwiY292ZXJfdHJlZVwiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9XCJhbm92YVwiKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 100, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM4LjM4ODg5XG4ifQ== -->
+<pre><code>[1] 38.38889</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAyMDAsIFwiY292ZXJfdHJlZVwiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9XCJhbm92YVwiKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 200, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM4LjE1NjY3XG4ifQ== -->
+<pre><code>[1] 38.15667</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCA0MTQsIFwiY292ZXJfdHJlZVwiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9XCJhbm92YVwiKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 414, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDMwLjYxNDI5XG4ifQ== -->
+<pre><code>[1] 30.61429</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKCdsb2NhbFJlZ3Jlc3Npb24uUicpXG5yc19tb2RlbCA8LSBjcmVhdGVMb2NhbFJlZ3Jlc3Npb25Nb2RlbChyZWFsX2VzdGF0ZSwgbGlzdChcInpzY29yZVwiLFwienNjb3JlXCIsXCJ6c2NvcmVcIixcInpzY29yZVwiLFwienNjb3JlXCIsXCJ6c2NvcmVcIixcIm9taXRcIikpXG53cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDEsIFwiY292ZXJfdHJlZVwiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9XCJhbm92YVwiKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>source(&#39;localRegression.R&#39;)
+rs_model &lt;- createLocalRegressionModel(real_estate, list(&quot;zscore&quot;,&quot;zscore&quot;,&quot;zscore&quot;,&quot;zscore&quot;,&quot;zscore&quot;,&quot;zscore&quot;,&quot;omit&quot;))
+wrap(rs_model, real_estate[1,], 1, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM3LjlcbiJ9 -->
+<pre><code>[1] 37.9</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAxMCwgXCJjb3Zlcl90cmVlXCIsIHJwYXJ0LCBob3VzZS5wcmljZS5vZi51bml0LmFyZWEgfiBob3VzZS5hZ2UsIG1ldGhvZD1cImFub3ZhXCIpW1sxXV1cbmBgYCJ9 -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 10, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQyLjVcbiJ9 -->
+<pre><code>[1] 42.5</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAxMDAsIFwiY292ZXJfdHJlZVwiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9XCJhbm92YVwiKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 100, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM3LjIzNTI5XG4ifQ== -->
+<pre><code>[1] 37.23529</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAyMDAsIFwiY292ZXJfdHJlZVwiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9XCJhbm92YVwiKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 200, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM4Ljg4ODUyXG4ifQ== -->
+<pre><code>[1] 38.88852</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCA0MTQsIFwiY292ZXJfdHJlZVwiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9XCJhbm92YVwiKVtbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>wrap(rs_model, real_estate[1,], 414, &quot;cover_tree&quot;, rpart, house.price.of.unit.area ~ house.age, method=&quot;anova&quot;)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDMwLjYxNDI5XG4ifQ== -->
+<pre><code>[1] 30.61429</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="funkcja-knn-k-najbliższych-sąsiadów" class="section level3">
-<h3>Funkcja kNN (k najbliższych sąsiadów)</h3>
-<p>Funkcja <code>getKnn</code> pozwala na wybranie spośród wskazanego zbioru</p>
 </div>
+<div id="implementacja" class="section level2">
+<h2>Implementacja</h2>
+<p>!!!TUTAJ JAKIŚ ŁADNY WSTĘP!!!</p>
+<p>Funkcja <code>wrap</code> opakowuje funkcję do budowania modelu liniowego i dokonuje predykcji z użyciem modelu lokalnego wyznaczonego przez funkcję <code>get.knn</code>. Jako argumenty funkcja <code>wrap</code> przyjmuje obiekt danych, parametry <code>n</code> i <code>dist_method</code> przekazowane do funkcji <code>get.knn</code> oraz funkcję do opakowania i ew. dodatkowe argumenty dla niej.</p>
+<p>Dodatkowo zapewniamy 3 funkcje ułatwiające korzystanie z funkcji <code>wrap</code>. <code>default.wrap</code> zapewnia domyślne wartości dla paramtru <code>n</code> i <code>dist_method</code>. <code>n</code> jest ustawione jako 100 i jako <code>dist_method</code> przekazywana jest wartość <code>euclidean</code>. Funkcja ta może zostać użyta jako punkt wyjścia do dostosowywania metaparemtrów algorytmu.</p>
+<p>Funkcje <code>localLinear.wrap</code> używa funkcji <code>default.wrap</code> do obudowania wbudowanej funkcji <code>lm</code>. Funkcja ta jako dodatkowy argument przyjmuje też formułę, która zostanie przekazana do funkcji <code>lm</code>.</p>
+<p>Tak samo jak <code>localLiner.wrap</code> funkcja <code>regressionTree.wrap</code> zapewnia proste opakowanie dla funkcji <code>rpart</code> z biblioteki <code>rpart</code>.</p>
+<p>Funkcja <code>get.knn</code> przyjmuje zbiór treningowy, wektor <code>x</code> i znajduje <code>n</code> najbliższych sąsiadów w zbiorze treningowym dla wektora <code>x</code> używając wbudowanej funkcji <code>dist</code> i przekazując jej <code>dist_method</code>.</p>
 <div id="model-regresji-liniowej" class="section level3">
 <h3>Model regresji liniowej</h3>
+<p>!!! DAĆ WYNIKI !!!</p>
 </div>
 <div id="model-drzew-regresji" class="section level3">
 <h3>Model drzew regresji</h3>
+<p>!!! DAĆ WYNIKI !!!</p>
 </div>
 </div>
 <div id="użycie-pakietu" class="section level2">
@@ -1879,7 +1958,7 @@ cars_norm &lt;- normalizeDataFrame(cars, test)</code></pre>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTWV0b2R5IG9ka3J5d2FuaWEgd2llZHp5IgphdXRob3I6ICJSYWZhxYIgR2FsY3phaywgV29qY2llY2ggR3J1c3prYSIKb3V0cHV0OiAKICBwZGZfZG9jdW1lbnQ6IGRlZmF1bHQKICBodG1sX25vdGVib29rOiBkZWZhdWx0Ci0tLQoKYGBge3J9CmxpYnJhcnkoZ2dwbG90MikKYGBgCgojUHJvamVrdAoKIyMgWmFnYWRuaWVuaWUKCl9fX1RlbWF0Ol9fXyBfTG9rYWxuYSByZWdyZXNqYSAocHJlZHlrY2phIHdhcnRvxZtjaSBmdW5rY2ppIGRvY2Vsb3dlaiBkbGEgcHJ6eWvFgmFkdSB6YSBwb21vY8SFIG1vZGVsdSBqZWRub3Jhem93ZWdvIHXFvHl0a3UgYnVkb3dhbmVnbyBuYSBwb2RzdGF3aWUgamVnbyDigJ5uYWpibGnFvHN6eWNoIHPEhXNpYWTDs3figJ0pLiBFa3NwZXJ5bWVudHkgeiBraWxrb21hIHLDs8W8bnltaWFsZ29yeXRtYW1pIGRvIGJ1ZG93YW5pYSBtb2RlbGkgbG9rYWxueWNoLiBQb3LDs3duYW5pZSB6IGFsZ29yeXRtYW1pIHJlZ3Jlc2ppIGRvc3TEmXBueW1pIHcgUi5fCgpXIHJhbWFjaCBwcm9qZWt0dSBuYWxlxbxhxYJvIG5hcGlzYcSHIHogdcW8eWNpZW0gcGFraWV0dSBSIGJpYmxpb3Rla2kvZnVua2NqaSwga3TDs3JhIHBvendvbGkgbmEgemFzdG9zb3dhbmllIGFsZ29yeXRtw7N3IHJlZ3Jlc2ppIGRvc3TEmXBueWNoIHcgcGFraWVjaWUgUiB3IHRyeWJpZSAibG9rYWxueW0iLiBzcHJvd2FkemEgc2nEmSB0byBkbyB6bmFsZXppZW5pYSB3IHpiaW9yemUgZGFueWNoIChrdMOzcnkgbXVzaSBiecSHIGRvIHRlZ28gb2Rwb3dpZWRuaW8gcHJ6eWdvdG93YW55KSB6YmlvcnUgdHJlbnVqxIVjZWdvIGRsYSBkYW5lZ28gcHJ6eWvFgmFkdSB6IHXFvHljaWVtIGFsZ29yeXRtdSBrLW5hamJsacW8c3p5Y2ggc8SFc2lhZMOzdy4gTmFzdMSZcG5pZSBkbGEgdGFraWVnbyB6YmlvcnUgbmFsZcW8eSB6YXN0b3Nvd2HEhyB3eWJyYW55IGFsZ29yeXRtIHJlZ3Jlc2ppIHogcGFraWV0dSBSLiBKYWtvIGFsZ29yeXRteSBidWRvd2FuaWEgbW9kZWxpIG5hbGXFvHkgemFzdG9zb3dhxIcgZG9zdMSZcG5lIHcgcGFraWVjaWUgUiBhbGdvcnl0bXkgcmVncmVzamlpLiBXeWtvcnp5c3RhbmUgYWxnb3J5dG15IHpvc3RhxYJ5IG9waXNhbmUgdyBkYWxzemVqIGN6xJnFm2NpLgoKVyByYW1hY2ggcHJvamVrdHUgbWlhxYJ5IHpvc3RhxIcgcHJ6ZXByb3dhZHpvbmUgdGVzdHkgc3ByYXdkemFqxIVjZSBkemlhxYJhbmllIHVzeXNrYW5lZ28ga29kdSBkbGEga2lsa3UgYWxnb3J5dG3Ds3cgb3JheiB6YmlvcsOzdyBkYW55Y2guCgojIyBDemVtdSB3YXJ0byB6YWrEhcSHIHNpxJkgdGFraW0gemFnYWRuaWVuaWVtClNhbW8gemFkYW5pZSBqZXN0IGRvxZvEhyBjaWVrYXdlIHplIHd6Z2zEmWR1IG5hIHRvLCDFvGUgaXN0bmllasSFIHNlbnNvd25lIGFsZ29yeXRteSBwb3p3YWxhasSFY2UgbmEgcmVhbGl6YWNqxJkgcmVncmVzamkgbG9rYWxuZWogdGFraWUgamFrIF9MT0VTXyBjenkgX0xPV0VTU18uIEplZG55bSB6IHBvd29kw7N3IG1vxbxlIGJ5xIcgdHV0YWogY2jEmcSHIHByemV0ZXN0b3dhbmlhIHNwcmF3bm/Fm2NpIGFsZ29yeXRtw7N3IHJlZ3Jlc2ppIHcgdHJ5YmllIGxva2FsbnltIGkgd2VyeWZpa2FjamkgcG9wcmF3bm/Fm2NpIGljaCBkemlhxYJhbmlhLiBaYXN0b3Nvd2FuaWUgYWxnb3J5dG3Ds3cgYnVkb3dhbmFpYSBtb2RlbGkgcmVncmVzamkgdyB0cnliaWUgbG9rYWxueW0gcG96d2FsYSBuYSB6bmFjem5lIHptbmllanN6ZW5pZSBjemFzdSBpIHphc29iw7N3IHBvdHJ6ZWJueWNoIGRvIHd5a29uYW5pYSBwcmVkeWtjamksIGNvIHd5bmlrYSB6ZSB6bmFjem5lZ28gb2dyYW5pY3plbmlhIGxpY3plYm5vxZtjaSBkYW55Y2ggdHJlbnVqxIVjeWNoIGRvIHR5bGtvIHR5Y2ggeiBiZXpwb8WbcmVkbmllZ28gb2JzemFydSAoay1uYWpibGnFvHN6eWNoIHPEhXNpYWTDs3cpLgoKCiMjIFpiaW9yeSBkYW55Y2gKRG8gcHJvamVrdHUgbXVzaWVsacWbbXkgd3licmHEhyB6YmlvcnkgZGFueWNoIHRlc3Rvd3ljaCBrdMOzcmUgcG93aW5ueSBzcGXFgm5pYcSHIHd5bWFnYW5pYToKIC0gbGljemJhIGF0cnlidXTDs3cgcG93aW5uYSBiecSHIG9kcG93aWVkbmlvIGR1xbxhICg+NSBhdHJ5YnV0w7N3KQogLSB6bWllbm5hIG9iamHFm25pYW5hIHBvd2lubmEgYnnEhyBjacSFZ8WCYSBsdWIgemFjaG93eXdhxIcgc2VucyB3IHByenlwYWRrdSBpbnRlcnBvbGFjamkgKG5wLiBvY2VuYSBmaWxtdSB3IHNrYWxpIGR5c2tyZXRuZWogMS0xMCB6YWNob3d1amUgc2VucyBkbGEgd2FydG/Fm2NpIDkuODEpCiAtIHpiacOzciBkYW55Y2ggcG93aW5pZW4gemF3aWVyYcSHIG9kcG93aWVkbmlvIGR1xbxvIHByenlrxYJhZMOzdwoKUG8gZMWCdWdpY2ggcG9zenVraXdhbmlhY2ggc2Vuc293bnljaCBpIG9kcG93aWVkbmlvIGNpZWthd3ljaCBkYW55Y2ggZG8gYW5hbGl6eSBuYSBkb3N0xJlwbnljaCBwb3J0YWxhY2ggdWRvc3TEmXBuaWFqxIVjeWNoIHpiaW9yeSBkYW55Y2ggKEthZ2dsZSwgRGF0YS5Xb3JsZCkgemRlY3lkb3dhbGnFm215IHNpxJkgbmEgbmFzdMSZcHVqxIVjZSBwcm9wb3p5Y2plOgoKIyMjIFpiacOzciBkYW5jeWggd3lwb8W8eWNlxYQgcm93ZXLDs3cgdyBzeXN0ZW1pZSB3eXBvxbx5Y3phbG5pCkRhbmUgcG9jaG9kesSFIHplIHN0cm9ueTogW2h0dHBzOi8vZGF0YS53b3JsZC9kYXRhLXNvY2lldHkvY2FwaXRhbC1iaWtlc2hhcmUtMjAxMS0yMDEyXSgpLgoKWmJpw7NyIHphd2llcmEgMTczNzkgcHJ6eWvFgmFkw7N3IGRvdHljesSFY3ljaCB3eXBvxbx5Y3plxYQgcm93ZXLDs3cgdyBzeXN0ZW1pZSB3eXBvxbx5Y3phbG5pIHcgV2FzenluZ3RvbmllLiBEb3N0xJlwbmUgc8SFIGF0cnlidXR5IHp3acSFemFuZSB6IGN6YXNlbSB3eXBvxbx5Y3plbmlhIChkemllxYQgdHlnb2RuaWEsIGdvZHppbmEpLCBwb2dvZMSFICh0ZW1wZXJhdHVyYSwgd2lpbGdvdG5vxZvEhywgcHLEmWRrb8WbxIcgd2lhdHJ1KSBvcmF6IGxpY3pieSB3eXBvxbx5Y3pvbnljaCByb3dlcsOzdyAodcW8eXRrb3duaWN5IHphcmVqc2V0cm93YW5pLCB1xbx5dGtvd25pY3kgbmllemFyZWplc3Ryb3dhbmksIHXFvHl0a293bmljeSDFgsSFY3puaWUpLlcgc3pjemVnw7Nsbm/Fm2NpIHJlZ3Jlc2rEmSBtb8W8bmEgYmFkYcSHIHcgemFrcmVzaWUgxYLEhWN6bmVqIGxpY3pieSB3eXBvxbx5Y3plxYQuIFpiacOzciB3eWRhamUgc2nEmSBkb8WbxIcgY2lla2F3eSBkbyB6YmFkYW5pYSBvcmF6IGplc3Qgd3lzdGFyY3phasSFY28gZHXFvHkuCgpgYGB7cn0KYmlrZXMgPC0gcmVhZC5jc3YoImh0dHBzOi8vcXVlcnkuZGF0YS53b3JsZC9zL2pjcGdrcWRhbDJ6dGlydm9haHg1ZG1vcGtwenI3cSIsIGhlYWRlcj1UUlVFLCBzdHJpbmdzQXNGYWN0b3JzPUZBTFNFKQpiaWtlcyRDYXN1YWwuVXNlcnMgPC0gTlVMTApiaWtlcyRSZWdpc3RlcmVkLlVzZXJzIDwtIE5VTEwKCmBgYAoKCiMjIyBaYmnDs3IgZGFueWNoIHXFvHl3YW55Y2ggc2Ftb2Nob2TDs3cKRGFuZSBwb2Nob2R6xIUgemUgc3Ryb255OiBbaHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9jL3VzZWRjYXJ2YWx1YXRpb25dKCkKClpiacOzciB6YXdpZXJhIDcwMDAwIG9ic2Vyd2FjamkgKHByenlrxYJhZMOzdykgZG90eWN6xIVjeWNoIGNlbiBzcHJ6ZWRhxbx5IHNhbW9jaG9kw7N3IG9zb2Jvd3ljaCBvIG9rcmXFm2xvbmVqIG1hcmNlLCB3aWVrdSwgcG9qZW1ub8WbY2kgc2lsbmlrYSwgbW9jeSwgcHJ6ZWplY2hhbmVqIG9kbGVnw7PFgm/Fm2NpIG9yYXogbGljemJ5IHBvcHJ6ZWRuaWNoIHfFgmHFm2NpY2llbGkuIFdzenlzdGtpZSBhdHJ5YnV0eSBwb3phIG1hcmvEhSBzxIUgYXRyeWJ1dGFtaSBjacSFZ8WCeW1pIChixIVkxbogZGFqxIVjeW1pIHNpxJkgdWNpxIVnbGnEhykuIEF0cnlidXRlbSBwcnp5d2lkeXdhbnltIGRsYSB0ZWdvIHpiaW9ydSBqZXN0IHdhcnRvxZvEhyBzYW1vY2hvZHUuCgpgYGB7cn0KY2FycyA8LSByZWFkLmNzdigiY2Fycy5jc3YiLCBoZWFkZXI9VFJVRSwgc3RyaW5nc0FzRmFjdG9ycz1GQUxTRSkKY2FycyR5ZWFyIDwtIE5VTEwKYGBgCgoKIyMjIFpiacOzciBkYW55Y2ggbmllcnVjaG9tb8WbY2kKRGFuZSBwb2Nob2R6xIUgemUgc3Ryb255OiBbaHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9xdWFudGJydWNlL3JlYWwtZXN0YXRlLXByaWNlLXByZWRpY3Rpb25dKCkKClpiacOzciB6YXdpZXJhIDQxNCBvYnNlcndhY2ppIGRvdHljesSFY3ljaCBzcHJ6ZWRhxbx5IG5pZXJ1Y2hvbW/Fm2NpIChkb23Ds3cgaSBtaWVzemthxYQpIG9waXNhbnljaCB6IHXFvHljaWVtIGRhdHkgdHJhbnNha2NqaSwgd2lla3UgbmllcnVjaG9tb8WbY2ksIG9kbGVnxYJvxZtjaSBvZCBwcnp5c3Rhbmt1LCBsaWN6Ynkgc2tlbHDDs3cgdyBva29saWN5LCBwb8WCb8W8ZW5pYSBnZW9ncmFmaWN6bmVnbyBvcmF6IGNlbnkgemEgamVkbm9zdGvEmSBwb3dpZXJ6Y2huaS4gVyBwcnp5cGFka3UgdHljaCBkYW55Y2ggYsSZZHppZW15IHByemV3aWR5d2HEhyBjZW7EmSB6YSBqZWRub3N0a8SZIHBvd2llcnpjaG5pLgoKYGBge3J9CnJlYWxfZXN0YXRlIDwtIHJlYWQuY3N2KCJyZWFsX2VzdGF0ZS5jc3YiLCBoZWFkZXI9VFJVRSwgc3RyaW5nc0FzRmFjdG9ycz1GQUxTRSkKcmVhbF9lc3RhdGUkTm8gPC0gTlVMTApgYGAKCiMjIEltcGxlbWVudGFjamEKCiMjIyBOb3JtYWxpemFjamEgaSBkZW5vcm1hbGl6YWNqYSBkYW55Y2gKVyBjZWx1IHBvcHJhd25lZ28gemFzdG9zb3dhbmlhIG1ldG9keSBrTk4gKGsgbmFqYmxpxbxzenljaCBzxIVzaWFkw7N3KSBkbyBvZ3JlxZtsZW5pYSB6YmlvcnUgdGVybmluZ293ZWdvIGRhbmUgbXVzesSFIGJ5xIcgdXByemVkbmlvIHpub3JtYWxpem93YW5lLiBKZXN0IHRvIHd5bWFnYW5lLCBwb25pZXdhxbwgYWxnb3J5dG0ga05OIGJhenVqZSBuYSBmdW5rY2ppIG9kbGVnxYJvxZtjaS4gQnJhayBub3JtYWxpemFjamkgc3ByYXdpxYJieSwgxbxlIGplZGVuIHogYXRyeWJ1dMOzdyBiecWCYnkgd3lyw7PFvG5pb255IHplIHd6Z2zEmWR1IG5hIHdpxJlrc3p5IHpha3JlcyB3YXJ0b3NjaS4gU3Rvc3VqZSBzacSZIHRyenkgcm96ZHphamUgbm9ybWFsaXphY2ppOgogLSBMaW5pb3dlIHByemVza2Fsb3dhbmllIHdhcnRvxZtjaSBkbyBwcnplZGl6YcWCdSAkWzAtMV0kIGRsYSBhdHJ5YnV0w7N3IG9ncmFuaWN6b255Y2ggKG8gdXN0YWxvbnljaCB3YXJ0b8WbY2lhY2ggbWluaW1hbG5laiBpIG1ha3N5bWFsbmVqKQogLSBQcnplc2thbG93YW5pZSB6IHXFvHljaWVtIHJvemvFgmFkdSBub3JtYWxuZWdvIG8gxZtyZWRuaWVqICRFeCA9IDAkIGkgd2FyaWFuY2ppICRcc2lnbWFeezJ9ID0gMSQuIC0gZGxhIHdhcnRvxZtjaSBuaWVvZ3Jhbmljem9ueWNoCiAtIFByenlkemllbGVuaWUgd2FydG/Fm2NpICRbMC0xXSQgcm96xYJvxbxvbnljaCByw7N3bm9taWVybmllIGRsYSBhdHJ5YnV0w7N3IGR5c2tyZXRueWNoCiAKVyBwYWtpZWNpZSB0YWthIG5vcm1hbGl6YWNqYSBtb8W8ZSB6b3N0YcSHIHd5a29uYW5hIGF1dG9tYXR5Y3puaWUgcHJ6ZXogemFzdG9zb3dhbmllIGZ1bmNrY2ppIGBgLgoKYGBge3J9CnNvdXJjZSgnbm9ybWFsaXplQ2hyVmVjLnInKQpzb3VyY2UoJ25vcm1hbGl6ZURhdGFGcmFtZS5yJykKY2Fyc19ub3JtIDwtIG5vcm1hbGl6ZURhdGFGcmFtZShjYXJzLCB0ZXN0KQpgYGAKCiMjIyBGdW5rY2phIGtOTiAoayBuYWpibGnFvHN6eWNoIHPEhXNpYWTDs3cpCgpGdW5rY2phIGBnZXRLbm5gIHBvendhbGEgbmEgd3licmFuaWUgc3BvxZtyw7NkIHdza2F6YW5lZ28gemJpb3J1IAoKIyMjIE1vZGVsIHJlZ3Jlc2ppIGxpbmlvd2VqCgojIyMgTW9kZWwgZHJ6ZXcgcmVncmVzamkKCiMjIFXFvHljaWUgcGFraWV0dQoKIyMgTWV0b2R5IHJlZ3Jlc2ppIGxva2FsbmVqIHogcGFraWV0dSBSCiMjIyBMT0VTUwojIyMgTE9XRVNTCgojIyBXeW5pa2kgaSBwb3LDs3duYW5pZSB6IG1ldG9kYW1pIHJlZ3Jlc2ppIGxva2FsbmVqIGRvc3TEmXBueW1pIHcgcGFraWVjaWUgUgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTWV0b2R5IG9ka3J5d2FuaWEgd2llZHp5IgphdXRob3I6ICJSYWZhxYIgR2FsY3phaywgV29qY2llY2ggR3J1c3prYSIKb3V0cHV0OiAKICBwZGZfZG9jdW1lbnQ6IGRlZmF1bHQKICBodG1sX25vdGVib29rOiBkZWZhdWx0Ci0tLQoKYGBge3J9CmxpYnJhcnkoZ2dwbG90MikKYGBgCgojUHJvamVrdAoKIyMgWmFnYWRuaWVuaWUKCl9fX1RlbWF0Ol9fXyBfTG9rYWxuYSByZWdyZXNqYSAocHJlZHlrY2phIHdhcnRvxZtjaSBmdW5rY2ppIGRvY2Vsb3dlaiBkbGEgcHJ6eWvFgmFkdSB6YSBwb21vY8SFIG1vZGVsdSBqZWRub3Jhem93ZWdvIHXFvHl0a3UgYnVkb3dhbmVnbyBuYSBwb2RzdGF3aWUgamVnbyDigJ5uYWpibGnFvHN6eWNoIHPEhXNpYWTDs3figJ0pLiBFa3NwZXJ5bWVudHkgeiBraWxrb21hIHLDs8W8bnltaWFsZ29yeXRtYW1pIGRvIGJ1ZG93YW5pYSBtb2RlbGkgbG9rYWxueWNoLiBQb3LDs3duYW5pZSB6IGFsZ29yeXRtYW1pIHJlZ3Jlc2ppIGRvc3TEmXBueW1pIHcgUi5fCgpXIHJhbWFjaCBwcm9qZWt0dSBuYWxlxbxhxYJvIG5hcGlzYcSHIHogdcW8eWNpZW0gcGFraWV0dSBSIGJpYmxpb3Rla2kvZnVua2NqaSwga3TDs3JhIHBvendvbGkgbmEgemFzdG9zb3dhbmllIGFsZ29yeXRtw7N3IHJlZ3Jlc2ppIGRvc3TEmXBueWNoIHcgcGFraWVjaWUgUiB3IHRyeWJpZSAibG9rYWxueW0iLiBzcHJvd2FkemEgc2nEmSB0byBkbyB6bmFsZXppZW5pYSB3IHpiaW9yemUgZGFueWNoIChrdMOzcnkgbXVzaSBiecSHIGRvIHRlZ28gb2Rwb3dpZWRuaW8gcHJ6eWdvdG93YW55KSB6YmlvcnUgdHJlbnVqxIVjZWdvIGRsYSBkYW5lZ28gcHJ6eWvFgmFkdSB6IHXFvHljaWVtIGFsZ29yeXRtdSBrLW5hamJsacW8c3p5Y2ggc8SFc2lhZMOzdy4gTmFzdMSZcG5pZSBkbGEgdGFraWVnbyB6YmlvcnUgbmFsZcW8eSB6YXN0b3Nvd2HEhyB3eWJyYW55IGFsZ29yeXRtIHJlZ3Jlc2ppIHogcGFraWV0dSBSLiBKYWtvIGFsZ29yeXRteSBidWRvd2FuaWEgbW9kZWxpIG5hbGXFvHkgemFzdG9zb3dhxIcgZG9zdMSZcG5lIHcgcGFraWVjaWUgUiBhbGdvcnl0bXkgcmVncmVzamlpLiBXeWtvcnp5c3RhbmUgYWxnb3J5dG15IHpvc3RhxYJ5IG9waXNhbmUgdyBkYWxzemVqIGN6xJnFm2NpLgoKVyByYW1hY2ggcHJvamVrdHUgbWlhxYJ5IHpvc3RhxIcgcHJ6ZXByb3dhZHpvbmUgdGVzdHkgc3ByYXdkemFqxIVjZSBkemlhxYJhbmllIHVzeXNrYW5lZ28ga29kdSBkbGEga2lsa3UgYWxnb3J5dG3Ds3cgb3JheiB6YmlvcsOzdyBkYW55Y2guCgojIyBDemVtdSB3YXJ0byB6YWrEhcSHIHNpxJkgdGFraW0gemFnYWRuaWVuaWVtClNhbW8gemFkYW5pZSBqZXN0IGRvxZvEhyBjaWVrYXdlIHplIHd6Z2zEmWR1IG5hIHRvLCDFvGUgaXN0bmllasSFIHNlbnNvd25lIGFsZ29yeXRteSBwb3p3YWxhasSFY2UgbmEgcmVhbGl6YWNqxJkgcmVncmVzamkgbG9rYWxuZWogdGFraWUgamFrIF9MT0VTXyBjenkgX0xPV0VTU18uIEplZG55bSB6IHBvd29kw7N3IG1vxbxlIGJ5xIcgdHV0YWogY2jEmcSHIHByemV0ZXN0b3dhbmlhIHNwcmF3bm/Fm2NpIGFsZ29yeXRtw7N3IHJlZ3Jlc2ppIHcgdHJ5YmllIGxva2FsbnltIGkgd2VyeWZpa2FjamkgcG9wcmF3bm/Fm2NpIGljaCBkemlhxYJhbmlhLiBaYXN0b3Nvd2FuaWUgYWxnb3J5dG3Ds3cgYnVkb3dhbmFpYSBtb2RlbGkgcmVncmVzamkgdyB0cnliaWUgbG9rYWxueW0gcG96d2FsYSBuYSB6bmFjem5lIHptbmllanN6ZW5pZSBjemFzdSBpIHphc29iw7N3IHBvdHJ6ZWJueWNoIGRvIHd5a29uYW5pYSBwcmVkeWtjamksIGNvIHd5bmlrYSB6ZSB6bmFjem5lZ28gb2dyYW5pY3plbmlhIGxpY3plYm5vxZtjaSBkYW55Y2ggdHJlbnVqxIVjeWNoIGRvIHR5bGtvIHR5Y2ggeiBiZXpwb8WbcmVkbmllZ28gb2JzemFydSAoay1uYWpibGnFvHN6eWNoIHPEhXNpYWTDs3cpLgoKCiMjIFpiaW9yeSBkYW55Y2gKRG8gcHJvamVrdHUgbXVzaWVsacWbbXkgd3licmHEhyB6YmlvcnkgZGFueWNoIHRlc3Rvd3ljaCBrdMOzcmUgcG93aW5ueSBzcGXFgm5pYcSHIHd5bWFnYW5pYToKIC0gbGljemJhIGF0cnlidXTDs3cgcG93aW5uYSBiecSHIG9kcG93aWVkbmlvIGR1xbxhICg+NSBhdHJ5YnV0w7N3KQogLSB6bWllbm5hIG9iamHFm25pYW5hIHBvd2lubmEgYnnEhyBjacSFZ8WCYSBsdWIgemFjaG93eXdhxIcgc2VucyB3IHByenlwYWRrdSBpbnRlcnBvbGFjamkgKG5wLiBvY2VuYSBmaWxtdSB3IHNrYWxpIGR5c2tyZXRuZWogMS0xMCB6YWNob3d1amUgc2VucyBkbGEgd2FydG/Fm2NpIDkuODEpCiAtIHpiacOzciBkYW55Y2ggcG93aW5pZW4gemF3aWVyYcSHIG9kcG93aWVkbmlvIGR1xbxvIHByenlrxYJhZMOzdwoKUG8gZMWCdWdpY2ggcG9zenVraXdhbmlhY2ggc2Vuc293bnljaCBpIG9kcG93aWVkbmlvIGNpZWthd3ljaCBkYW55Y2ggZG8gYW5hbGl6eSBuYSBkb3N0xJlwbnljaCBwb3J0YWxhY2ggdWRvc3TEmXBuaWFqxIVjeWNoIHpiaW9yeSBkYW55Y2ggKEthZ2dsZSwgRGF0YS5Xb3JsZCkgemRlY3lkb3dhbGnFm215IHNpxJkgbmEgbmFzdMSZcHVqxIVjZSBwcm9wb3p5Y2plOgoKIyMjIFpiacOzciBkYW5jeWggd3lwb8W8eWNlxYQgcm93ZXLDs3cgdyBzeXN0ZW1pZSB3eXBvxbx5Y3phbG5pCkRhbmUgcG9jaG9kesSFIHplIHN0cm9ueTogW2h0dHBzOi8vZGF0YS53b3JsZC9kYXRhLXNvY2lldHkvY2FwaXRhbC1iaWtlc2hhcmUtMjAxMS0yMDEyXSgpLgoKWmJpw7NyIHphd2llcmEgMTczNzkgcHJ6eWvFgmFkw7N3IGRvdHljesSFY3ljaCB3eXBvxbx5Y3plxYQgcm93ZXLDs3cgdyBzeXN0ZW1pZSB3eXBvxbx5Y3phbG5pIHcgV2FzenluZ3RvbmllLiBEb3N0xJlwbmUgc8SFIGF0cnlidXR5IHp3acSFemFuZSB6IGN6YXNlbSB3eXBvxbx5Y3plbmlhIChkemllxYQgdHlnb2RuaWEsIGdvZHppbmEpLCBwb2dvZMSFICh0ZW1wZXJhdHVyYSwgd2lpbGdvdG5vxZvEhywgcHLEmWRrb8WbxIcgd2lhdHJ1KSBvcmF6IGxpY3pieSB3eXBvxbx5Y3pvbnljaCByb3dlcsOzdyAodcW8eXRrb3duaWN5IHphcmVqc2V0cm93YW5pLCB1xbx5dGtvd25pY3kgbmllemFyZWplc3Ryb3dhbmksIHXFvHl0a293bmljeSDFgsSFY3puaWUpLlcgc3pjemVnw7Nsbm/Fm2NpIHJlZ3Jlc2rEmSBtb8W8bmEgYmFkYcSHIHcgemFrcmVzaWUgxYLEhWN6bmVqIGxpY3pieSB3eXBvxbx5Y3plxYQuIFpiacOzciB3eWRhamUgc2nEmSBkb8WbxIcgY2lla2F3eSBkbyB6YmFkYW5pYSBvcmF6IGplc3Qgd3lzdGFyY3phasSFY28gZHXFvHkuCgpgYGB7cn0KYmlrZXMgPC0gcmVhZC5jc3YoImh0dHBzOi8vcXVlcnkuZGF0YS53b3JsZC9zL2pjcGdrcWRhbDJ6dGlydm9haHg1ZG1vcGtwenI3cSIsIGhlYWRlcj1UUlVFLCBzdHJpbmdzQXNGYWN0b3JzPUZBTFNFKQpiaWtlcyRDYXN1YWwuVXNlcnMgPC0gTlVMTApiaWtlcyRSZWdpc3RlcmVkLlVzZXJzIDwtIE5VTEwKCmBgYAoKCiMjIyBaYmnDs3IgZGFueWNoIHXFvHl3YW55Y2ggc2Ftb2Nob2TDs3cKRGFuZSBwb2Nob2R6xIUgemUgc3Ryb255OiBbaHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9jL3VzZWRjYXJ2YWx1YXRpb25dKCkKClpiacOzciB6YXdpZXJhIDcwMDAwIG9ic2Vyd2FjamkgKHByenlrxYJhZMOzdykgZG90eWN6xIVjeWNoIGNlbiBzcHJ6ZWRhxbx5IHNhbW9jaG9kw7N3IG9zb2Jvd3ljaCBvIG9rcmXFm2xvbmVqIG1hcmNlLCB3aWVrdSwgcG9qZW1ub8WbY2kgc2lsbmlrYSwgbW9jeSwgcHJ6ZWplY2hhbmVqIG9kbGVnw7PFgm/Fm2NpIG9yYXogbGljemJ5IHBvcHJ6ZWRuaWNoIHfFgmHFm2NpY2llbGkuIFdzenlzdGtpZSBhdHJ5YnV0eSBwb3phIG1hcmvEhSBzxIUgYXRyeWJ1dGFtaSBjacSFZ8WCeW1pIChixIVkxbogZGFqxIVjeW1pIHNpxJkgdWNpxIVnbGnEhykuIEF0cnlidXRlbSBwcnp5d2lkeXdhbnltIGRsYSB0ZWdvIHpiaW9ydSBqZXN0IHdhcnRvxZvEhyBzYW1vY2hvZHUuCgpgYGB7cn0KY2FycyA8LSByZWFkLmNzdigiY2Fycy5jc3YiLCBoZWFkZXI9VFJVRSwgc3RyaW5nc0FzRmFjdG9ycz1GQUxTRSkKY2FycyR5ZWFyIDwtIE5VTEwKYGBgCgoKIyMjIFpiacOzciBkYW55Y2ggbmllcnVjaG9tb8WbY2kKRGFuZSBwb2Nob2R6xIUgemUgc3Ryb255OiBbaHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9xdWFudGJydWNlL3JlYWwtZXN0YXRlLXByaWNlLXByZWRpY3Rpb25dKCkKClpiacOzciB6YXdpZXJhIDQxNCBvYnNlcndhY2ppIGRvdHljesSFY3ljaCBzcHJ6ZWRhxbx5IG5pZXJ1Y2hvbW/Fm2NpIChkb23Ds3cgaSBtaWVzemthxYQpIG9waXNhbnljaCB6IHXFvHljaWVtIGRhdHkgdHJhbnNha2NqaSwgd2lla3UgbmllcnVjaG9tb8WbY2ksIG9kbGVnxYJvxZtjaSBvZCBwcnp5c3Rhbmt1LCBsaWN6Ynkgc2tlbHDDs3cgdyBva29saWN5LCBwb8WCb8W8ZW5pYSBnZW9ncmFmaWN6bmVnbyBvcmF6IGNlbnkgemEgamVkbm9zdGvEmSBwb3dpZXJ6Y2huaS4gVyBwcnp5cGFka3UgdHljaCBkYW55Y2ggYsSZZHppZW15IHByemV3aWR5d2HEhyBjZW7EmSB6YSBqZWRub3N0a8SZIHBvd2llcnpjaG5pLgoKYGBge3J9CnJlYWxfZXN0YXRlIDwtIHJlYWQuY3N2KCJyZWFsX2VzdGF0ZS5jc3YiLCBoZWFkZXI9VFJVRSwgc3RyaW5nc0FzRmFjdG9ycz1GQUxTRSkKcmVhbF9lc3RhdGUkTm8gPC0gTlVMTApgYGAKCj09PT09PT0KIyMjIE5vcm1hbGl6YWNqYSBpIGRlbm9ybWFsaXphY2phIGRhbnljaApXIGNlbHUgcG9wcmF3bmVnbyB6YXN0b3Nvd2FuaWEgbWV0b2R5IGtOTiAoayBuYWpibGnFvHN6eWNoIHPEhXNpYWTDs3cpIGRvIG9ncmXFm2xlbmlhIHpiaW9ydSB0ZXJuaW5nb3dlZ28gZGFuZSBtdXN6xIUgYnnEhyB1cHJ6ZWRuaW8gem5vcm1hbGl6b3dhbmUuIEplc3QgdG8gd3ltYWdhbmUsIHBvbmlld2HFvCBhbGdvcnl0bSBrTk4gYmF6dWplIG5hIGZ1bmtjamkgb2RsZWfFgm/Fm2NpLiBCcmFrIG5vcm1hbGl6YWNqaSBzcHJhd2nFgmJ5LCDFvGUgamVkZW4geiBhdHJ5YnV0w7N3IGJ5xYJieSB3eXLDs8W8bmlvbnkgemUgd3pnbMSZZHUgbmEgd2nEmWtzenkgemFrcmVzIHdhcnRvc2NpLiBTdG9zdWplIHNpxJkgdHJ6eSByb3pkemFqZSBub3JtYWxpemFjamk6CiAtIExpbmlvd2UgcHJ6ZXNrYWxvd2FuaWUgd2FydG/Fm2NpIGRvIHByemVkaXphxYJ1ICRbMC0xXSQgZGxhIGF0cnlidXTDs3cgb2dyYW5pY3pvbnljaCAobyB1c3RhbG9ueWNoIHdhcnRvxZtjaWFjaCBtaW5pbWFsbmVqIGkgbWFrc3ltYWxuZWopCiAtIFByemVza2Fsb3dhbmllIHogdcW8eWNpZW0gcm96a8WCYWR1IG5vcm1hbG5lZ28gbyDFm3JlZG5pZWogJEV4ID0gMCQgaSB3YXJpYW5jamkgJFxzaWdtYV57Mn0gPSAxJC4gLSBkbGEgd2FydG/Fm2NpIG5pZW9ncmFuaWN6b255Y2gKIC0gUHJ6eWR6aWVsZW5pZSB3YXJ0b8WbY2kgJFswLTFdJCByb3rFgm/FvG9ueWNoIHLDs3dub21pZXJuaWUgZGxhIGF0cnlidXTDs3cgZHlza3JldG55Y2gKIApXIHBha2llY2llIHRha2Egbm9ybWFsaXphY2phIG1vxbxlIHpvc3RhxIcgd3lrb25hbmEgYXV0b21hdHljem5pZSBwcnpleiB6YXN0b3Nvd2FuaWUgZnVuY2tjamkgYGAuCgpgYGB7cn0Kc291cmNlKCdsb2NhbFJlZ3Jlc3Npb24uUicpCnJzX21vZGVsIDwtIGNyZWF0ZUxvY2FsUmVncmVzc2lvbk1vZGVsKHJlYWxfZXN0YXRlLCBsaXN0KCJtaW5tYXgiLCJtaW5tYXgiLCJtaW5tYXgiLCJtaW5tYXgiLCJtaW5tYXgiLCJtaW5tYXgiLCJvbWl0IikpCndyYXAocnNfbW9kZWwsIHJlYWxfZXN0YXRlWzEsXSwgMSwgImNvdmVyX3RyZWUiLCBsbSwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlKVtbMV1dCndyYXAocnNfbW9kZWwsIHJlYWxfZXN0YXRlWzEsXSwgMTAsICJjb3Zlcl90cmVlIiwgbG0sIGhvdXNlLnByaWNlLm9mLnVuaXQuYXJlYSB+IGhvdXNlLmFnZSlbWzFdXQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDEwMCwgImNvdmVyX3RyZWUiLCBsbSwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlKVtbMV1dCndyYXAocnNfbW9kZWwsIHJlYWxfZXN0YXRlWzEsXSwgMjAwLCAiY292ZXJfdHJlZSIsIGxtLCBob3VzZS5wcmljZS5vZi51bml0LmFyZWEgfiBob3VzZS5hZ2UpW1sxXV0Kd3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCA0MTQsICJjb3Zlcl90cmVlIiwgbG0sIGhvdXNlLnByaWNlLm9mLnVuaXQuYXJlYSB+IGhvdXNlLmFnZSlbWzFdXQpgYGAKYGBge3J9CnNvdXJjZSgnbG9jYWxSZWdyZXNzaW9uLlInKQpyc19tb2RlbCA8LSBjcmVhdGVMb2NhbFJlZ3Jlc3Npb25Nb2RlbChyZWFsX2VzdGF0ZSwgbGlzdCgibWlubWF4IiwibWlubWF4IiwibWlubWF4IiwibWlubWF4IiwibWlubWF4IiwibWlubWF4Iiwib21pdCIpKQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDEsICJjb3Zlcl90cmVlIiwgcnBhcnQsIGhvdXNlLnByaWNlLm9mLnVuaXQuYXJlYSB+IGhvdXNlLmFnZSwgbWV0aG9kPSJhbm92YSIpW1sxXV0Kd3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAxMCwgImNvdmVyX3RyZWUiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9ImFub3ZhIilbWzFdXQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDEwMCwgImNvdmVyX3RyZWUiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9ImFub3ZhIilbWzFdXQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDIwMCwgImNvdmVyX3RyZWUiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9ImFub3ZhIilbWzFdXQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDQxNCwgImNvdmVyX3RyZWUiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9ImFub3ZhIilbWzFdXQpgYGAKYGBge3J9CnNvdXJjZSgnbG9jYWxSZWdyZXNzaW9uLlInKQpyc19tb2RlbCA8LSBjcmVhdGVMb2NhbFJlZ3Jlc3Npb25Nb2RlbChyZWFsX2VzdGF0ZSwgbGlzdCgienNjb3JlIiwienNjb3JlIiwienNjb3JlIiwienNjb3JlIiwienNjb3JlIiwienNjb3JlIiwib21pdCIpKQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDEsICJjb3Zlcl90cmVlIiwgcnBhcnQsIGhvdXNlLnByaWNlLm9mLnVuaXQuYXJlYSB+IGhvdXNlLmFnZSwgbWV0aG9kPSJhbm92YSIpW1sxXV0Kd3JhcChyc19tb2RlbCwgcmVhbF9lc3RhdGVbMSxdLCAxMCwgImNvdmVyX3RyZWUiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9ImFub3ZhIilbWzFdXQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDEwMCwgImNvdmVyX3RyZWUiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9ImFub3ZhIilbWzFdXQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDIwMCwgImNvdmVyX3RyZWUiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9ImFub3ZhIilbWzFdXQp3cmFwKHJzX21vZGVsLCByZWFsX2VzdGF0ZVsxLF0sIDQxNCwgImNvdmVyX3RyZWUiLCBycGFydCwgaG91c2UucHJpY2Uub2YudW5pdC5hcmVhIH4gaG91c2UuYWdlLCBtZXRob2Q9ImFub3ZhIilbWzFdXQpgYGAKCgojIyBJbXBsZW1lbnRhY2phCgohISFUVVRBSiBKQUtJxZogxYFBRE5ZIFdTVMSYUCEhIQoKRnVua2NqYSBgd3JhcGAgb3Bha293dWplIGZ1bmtjasSZIGRvIGJ1ZG93YW5pYSBtb2RlbHUgbGluaW93ZWdvIGkgZG9rb251amUgcHJlZHlrY2ppIHoKdcW8eWNpZW0gbW9kZWx1IGxva2FsbmVnbyB3eXpuYWN6b25lZ28gcHJ6ZXogZnVua2NqxJkgYGdldC5rbm5gLgpKYWtvIGFyZ3VtZW50eSBmdW5rY2phIGB3cmFwYCBwcnp5am11amUgb2JpZWt0IGRhbnljaCwgcGFyYW1ldHJ5IGBuYCBpIGBkaXN0X21ldGhvZGAKcHJ6ZWthem93YW5lIGRvIGZ1bmtjamkgYGdldC5rbm5gIG9yYXogZnVua2NqxJkgZG8gb3Bha293YW5pYSBpIGV3LiBkb2RhdGtvd2UgYXJndW1lbnR5IGRsYSBuaWVqLgoKRG9kYXRrb3dvIHphcGV3bmlhbXkgMyBmdW5rY2plIHXFgmF0d2lhasSFY2Uga29yenlzdGFuaWUgeiBmdW5rY2ppIGB3cmFwYC4KYGRlZmF1bHQud3JhcGAgemFwZXduaWEgZG9tecWbbG5lIHdhcnRvxZtjaSBkbGEgcGFyYW10cnUgYG5gIGkgYGRpc3RfbWV0aG9kYC4KYG5gIGplc3QgdXN0YXdpb25lIGpha28gMTAwIGkgamFrbyBgZGlzdF9tZXRob2RgIHByemVrYXp5d2FuYSBqZXN0IHdhcnRvxZvEhyBgZXVjbGlkZWFuYC4KRnVua2NqYSB0YSBtb8W8ZSB6b3N0YcSHIHXFvHl0YSBqYWtvIHB1bmt0IHd5asWbY2lhIGRvIGRvc3Rvc293eXdhbmlhIG1ldGFwYXJlbXRyw7N3IGFsZ29yeXRtdS4KCkZ1bmtjamUgYGxvY2FsTGluZWFyLndyYXBgIHXFvHl3YSBmdW5rY2ppIGBkZWZhdWx0LndyYXBgIGRvIG9idWRvd2FuaWEgd2J1ZG93YW5lagpmdW5rY2ppIGBsbWAuIEZ1bmtjamEgdGEgamFrbyBkb2RhdGtvd3kgYXJndW1lbnQgcHJ6eWptdWplIHRlxbwgZm9ybXXFgsSZLCBrdMOzcmEKem9zdGFuaWUgcHJ6ZWthemFuYSBkbyBmdW5rY2ppIGBsbWAuCgpUYWsgc2FtbyBqYWsgYGxvY2FsTGluZXIud3JhcGAgZnVua2NqYSBgcmVncmVzc2lvblRyZWUud3JhcGAgemFwZXduaWEgcHJvc3RlIG9wYWtvd2FuaWUKZGxhIGZ1bmtjamkgYHJwYXJ0YCB6IGJpYmxpb3Rla2kgYHJwYXJ0YC4gCgpGdW5rY2phIGBnZXQua25uYCBwcnp5am11amUgemJpw7NyIHRyZW5pbmdvd3ksIHdla3RvciBgeGAgaSB6bmFqZHVqZSBgbmAgbmFqYmxpxbxzenljaApzxIVzaWFkw7N3IHcgemJpb3J6ZSB0cmVuaW5nb3d5bSBkbGEgd2VrdG9yYSBgeGAgdcW8eXdhasSFYyB3YnVkb3dhbmVqIGZ1bmtjamkgYGRpc3RgIGkKcHJ6ZWthenVqxIVjIGplaiBgZGlzdF9tZXRob2RgLiAKCiMjIyBNb2RlbCByZWdyZXNqaSBsaW5pb3dlagoKISEhIERBxIYgV1lOSUtJICEhIQoKIyMjIE1vZGVsIGRyemV3IHJlZ3Jlc2ppCgohISEgREHEhiBXWU5JS0kgISEhCgojIyBVxbx5Y2llIHBha2lldHUKCiMjIE1ldG9keSByZWdyZXNqaSBsb2thbG5laiB6IHBha2lldHUgUgojIyMgTE9FU1MKIyMjIExPV0VTUwoKIyMgV3luaWtpIGkgcG9yw7N3bmFuaWUgeiBtZXRvZGFtaSByZWdyZXNqaSBsb2thbG5laiBkb3N0xJlwbnltaSB3IHBha2llY2llIFIK</div>
 
 
 

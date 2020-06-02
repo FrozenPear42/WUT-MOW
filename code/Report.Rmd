@@ -76,10 +76,33 @@ W celu poprawnego zastosowania metody kNN (k najbliższych sąsiadów) do ogreś
 W pakiecie taka normalizacja może zostać wykonana automatycznie przez zastosowanie funckcji ``.
 
 ```{r}
-source('normalizeChrVec.r')
-source('normalizeDataFrame.r')
-cars_norm <- normalizeDataFrame(cars, test)
+source('localRegression.R')
+rs_model <- createLocalRegressionModel(real_estate, list("minmax","minmax","minmax","minmax","minmax","minmax","omit"))
+wrap(rs_model, real_estate[1,], 1, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
+wrap(rs_model, real_estate[1,], 10, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
+wrap(rs_model, real_estate[1,], 100, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
+wrap(rs_model, real_estate[1,], 200, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
+wrap(rs_model, real_estate[1,], 414, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
 ```
+```{r}
+source('localRegression.R')
+rs_model <- createLocalRegressionModel(real_estate, list("minmax","minmax","minmax","minmax","minmax","minmax","omit"))
+wrap(rs_model, real_estate[1,], 1, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+wrap(rs_model, real_estate[1,], 10, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+wrap(rs_model, real_estate[1,], 100, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+wrap(rs_model, real_estate[1,], 200, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+wrap(rs_model, real_estate[1,], 414, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+```
+```{r}
+source('localRegression.R')
+rs_model <- createLocalRegressionModel(real_estate, list("zscore","zscore","zscore","zscore","zscore","zscore","omit"))
+wrap(rs_model, real_estate[1,], 1, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+wrap(rs_model, real_estate[1,], 10, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+wrap(rs_model, real_estate[1,], 100, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+wrap(rs_model, real_estate[1,], 200, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+wrap(rs_model, real_estate[1,], 414, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
+```
+
 
 ## Implementacja
 

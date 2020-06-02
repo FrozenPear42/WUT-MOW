@@ -42,27 +42,30 @@ normalizeVector <- function(localModel, v) {
 #
 stripDependentVariable <- function(dataset, formula) {
   depVar <- all.vars(formula)[1]
-  print(depVar)
-  stripped <- dataset[depVar]
-  dataset[depVar] <- NULL
-
+  if (depVar %in% colnames(dataset)) {
+    stripped <- dataset[depVar]
+    dataset[depVar] <- NULL
+  } else {
+    stripped <- NULL
+  }
   list(dataset=dataset, stripped=stripped)
 }
 
 #
 #
 #
-private.wrapOne <- function(localModel, x, n, knnAlgorithm, func, formula, ...) {
+.wrapOne <- function(localModel, x, n, knnAlgorithm, func, formula, ...) {
   normalizedX <- normalizeVector(localModel, x)
   normalizedX <- data.frame(as.list(normalizedX))
 
-  # TODO: normalize length
+  ds <- stripDependentVariable(localModel@normalizedDataset, formula)
+  dx <- stripDependentVariable(normalizedX, formula)
 
-  nn <- get.knnx(localModel@normalizedDataset, normalizedX, k=n, algorithm=knnAlgorithm)
+  nn <- get.knnx(ds$dataset, dx$dataset, k=n, algorithm=knnAlgorithm)
   indexes <-unlist(nn$nn.index[1,], use.names = FALSE)
   nn_train <- localModel@normalizedDataset[indexes,]
-  model <- func(..., data=nn_train)
-  predict(model, data.frame(as.list(x)))
+  model <- func(..., formula=formula, data=nn_train)
+  predict(model, normalizedX)
 }
 
 #' Predict values for `test` based on the `train` set with
@@ -81,19 +84,19 @@ private.wrapOne <- function(localModel, x, n, knnAlgorithm, func, formula, ...) 
 #' For usage examples look at implementation of
 #' `localLinear.wrap` and `regressionTree.wrap` functions.
 wrap <- function(localModel, test, n, knnAlgorithm, func, formula, ...) {
-  apply(test, 1, function(row) private.wrapOne(localModel, row, n, knnAlgorithm, func, formula, ...))
+  apply(test, 1, function(row) .wrapOne(localModel, row, n, knnAlgorithm, func, formula, ...))
 }
 
 #' Calls `wrap` function with predefined arguments
 #' for the KNN-alghoritm (n = 100 and dist_method="euclidean".
-default.wrap <- function(localModel, test, func, formula, ...) {
-  wrap(localModel, test, 100, "cover-tree", func, formula, ...)
+defaultWrap <- function(localModel, test, func, formula, ...) {
+  wrap(localModel, test, 100, "cover_tree", func, formula, ...)
 }
 
 #' Pedict values in `test` using `formula` with
 #' regression model beeing fit with builtin `lm` function.
-localLinear.wrap <- function(localModel, test, formula) {
-  default.wrap(localModel, test, lm, formula)
+localLinearWrap <- function(localModel, test, formula) {
+  defaultWrap(localModel, test, lm, formula)
 }
 
 #' Pedict values in `test` using `formula` with
@@ -101,8 +104,8 @@ localLinear.wrap <- function(localModel, test, formula) {
 #' function from `rpart` package.
 #'
 #' As a method "anove" is passed to the `rpart` function.
-regressionTree.wrap <- function(localModel, test, formula) {
-  default.wrap(localModel, test, rpart, formula, method="anova")
+regressionTreeWrap <- function(localModel, test, formula) {
+  defaultWrap(localModel, test, rpart, formula, method="anova")
 }
 
 
