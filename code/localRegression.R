@@ -156,4 +156,8 @@ normalizeDataFrame <- function(dataset, normalizationType) {
 }
 
 
-
+classifier.error <- function(localModel, test, wrappedFunc, formula, ...) {
+  partitioned <- private.partition(test, formula) # stub function
+  predictions <- wrappedFunc(localModel, pertitioned$test, ...)
+  mean((predicted$expected - predictions)^2)
+}
