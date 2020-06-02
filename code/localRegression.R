@@ -46,7 +46,7 @@ stripDependentVariable <- function(dataset, formula) {
   stripped <- dataset[depVar]
   dataset[depVar] <- NULL
 
-  list(dataset, stripped)
+  list(dataset=dataset, stripped=stripped)
 }
 
 #
@@ -153,9 +153,25 @@ normalizeDataFrame <- function(dataset, normalizationType) {
   list(dataset, normalizationParams)
 }
 
-
-classifier.error <- function(localModel, test, wrappedFunc, formula, ...) {
-  partitioned <- private.partition(test, formula) # stub function
-  predictions <- wrappedFunc(localModel, pertitioned$test, ...)
-  mean((predicted$expected - predictions)^2)
+.classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
+  partitioned <- stripDependentVariable(dataset, formula)
+  mean((as.vector(partitioned$stripped) - predictions)^2) # TODO: will it even like work?
 }
+
+.markClassifier <- function(localModel, test, wrappedFunc, formula, ...) {
+  predictionsForTrain <- wrappedFunc(localModel, localModel$dataset, formula, ...)
+  predictionsForTest <- wrappedFunc(localModel, test, formula, ...)
+  errorForTrain <- .classifierErrorOnSigleSet(localModel$dataset, predictionsForTrain, formula)
+  errorForTest <- .classifierErrorOnSigleSet(train, predictionsForTest, formula)
+  list(
+    testPred = predictionsForTest,
+    testError = errorForTest,
+    trainPred = predictionsForTrain,
+    trainError = errorForTrain,
+  )
+}
+
+
+
+
+
