@@ -158,6 +158,19 @@ normalizeDataFrame <- function(dataset, normalizationType) {
   mean((as.vector(partitioned$stripped) - predictions)^2) # TODO: will it even like work?
 }
 
+#' Mark classifier returning errors along with predictions
+#' on train and test datasets.
+#' 
+#' @param localModel model created with \code{createLocalRegressionModel} function
+#' @param test dataset containing test data (along with the predicted column)
+#' @param wrappedFunc prediction function that will be called - should return a vector of predictions
+#' @param formula formula to be passed to \code{wrappedFunc}
+#' @param ... rest of the params passed to the \code{wrappedFunc}
+#' 
+#' @return list of four element sqared mean error on test and train data
+#' along with predictions of the \code{wrappedFunc} for the train and test data.
+#' @examples
+#' classInfo <- .markClassifier(localModel, test, regressionTreeWrap, Sepal.Length~.)
 .markClassifier <- function(localModel, test, wrappedFunc, formula, ...) {
   predictionsForTrain <- wrappedFunc(localModel, localModel$dataset, formula, ...)
   predictionsForTest <- wrappedFunc(localModel, test, formula, ...)
