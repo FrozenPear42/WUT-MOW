@@ -261,7 +261,7 @@ splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
 .classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   partitioned <- stripDependentVariable(dataset, formula)
   stripped <- partitioned$stripped
-  mean((as.numeric(stripped[1,]) - predictions)^2) # TODO: will it even like work?
+  mean((as.numeric(stripped[,1]) - predictions)^2) # TODO: will it even like work?
 }
 
 #' Get errors of predictions
@@ -280,9 +280,9 @@ splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
 #' @examples
 #' classInfo <- .markClassifier(localModel, test, regressionTreeWrap, Sepal.Length~.)
 markClassifier <- function(localModel, test, wrappedFunc, n, formula, ...) {
-  predictionsForTrain <- wrappedFunc(localModel, localModel@normalizedDataset, n, formula, ...)
+  predictionsForTrain <- wrappedFunc(localModel, localModel@dataset, n, formula, ...)
   predictionsForTest <- wrappedFunc(localModel, test, n, formula, ...)
-  errorForTrain <- .classifierErrorOnSigleSet(localModel@normalizedDataset, predictionsForTrain, formula)
+  errorForTrain <- .classifierErrorOnSigleSet(localModel@dataset, predictionsForTrain, formula)
   errorForTest <- .classifierErrorOnSigleSet(test, predictionsForTest, formula)
   list(
     testPred = predictionsForTest,
