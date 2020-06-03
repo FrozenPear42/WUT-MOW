@@ -153,7 +153,7 @@ localLinearWrap <- function(localModel, test, n, formula) {
 #'
 #' @return dataframe of predicted values
 regressionTreeWrap <- function(localModel, test, n, formula, method="anova") {
-  wrap(localModel, test, n, "cover_tree", rpart, formula, method)
+  wrap(localModel, test, n, "cover_tree", rpart, formula, method=method)
 }
 
 
@@ -260,10 +260,11 @@ splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
 #' @param formula formula used in predictions
 #'
 #' @return MSE of predictions in given dataset
-.classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
+classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   partitioned <- stripDependentVariable(dataset, formula)
   stripped <- partitioned$stripped
-  mean((as.numeric(stripped[,1]) - predictions)^2) # TODO: will it even like work?
+  stripped_vec <- as.numeric(stripped[,1])
+  mean((stripped_vec - predictions)^2) # TODO: will it even like work?
 }
 
 #' Get errors of predictions
@@ -284,14 +285,31 @@ splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
 markClassifier <- function(localModel, test, wrappedFunc, n, formula, ...) {
   predictionsForTrain <- wrappedFunc(localModel, localModel@dataset, n, formula, ...)
   predictionsForTest <- wrappedFunc(localModel, test, n, formula, ...)
-  errorForTrain <- .classifierErrorOnSigleSet(localModel@dataset, predictionsForTrain, formula)
-  errorForTest <- .classifierErrorOnSigleSet(test, predictionsForTest, formula)
+  errorForTrain <- classifierErrorOnSigleSet(localModel@dataset, predictionsForTrain, formula)
+  errorForTest <- classifierErrorOnSigleSet(test, predictionsForTest, formula)
   list(
     testPred = predictionsForTest,
     testError = errorForTest,
     trainPred = predictionsForTrain,
-    trainError = errorForTrain,
+    trainError = errorForTrain
   )
 }
 
 
+markStandardClassifier <- function(localModel, test, func, formula, ...) {
+  testModel <- createLocalRegressionModel(
+    test,
+    lapply(localModel@normalizationParams, function(x) x$type))
+  model <- func(formula, localModel@normalizedDataset)
+
+  predictionsForTrain <- predict(model, localModel@normalizedDataset)
+  predictionsForTest <- predict(model, testModel@normalizedDataset)
+  errorForTrain <- classifierErrorOnSigleSet(localModel@dataset, predictionsForTrain, formula)
+  errorForTest <- classifierErrorOnSigleSet(testModel@dataset, predictionsForTest, formula)
+  list(
+    testPred = predictionsForTest,
+    testError = errorForTest,
+    trainPred = predictionsForTrain,
+    trainError = errorForTrain
+  )
+}
