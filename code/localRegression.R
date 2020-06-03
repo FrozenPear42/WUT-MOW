@@ -267,7 +267,8 @@ classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   mean_expected <- mean(expected)
   list(
     mse = mean((predictions - mean_expected)^2),
-    mre = mean(abs(predictions - expected)/predictions)
+    mre = mean(abs(predictions - expected)/predictions),
+    cod = sum((predictions-mean_expected)^2)/sum((expected-mean_expected)^2)
   )
 }
 
