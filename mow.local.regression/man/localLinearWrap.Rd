@@ -2,8 +2,7 @@
 % Please edit documentation in R/localRegression.R
 \name{localLinearWrap}
 \alias{localLinearWrap}
-\title{\code{wrap} function using linear model as regression model.
-Predicts values in test dataframe based on passed formula and LocalRegressionModel.}
+\title{Perform local regression with \code{lm} regression model}
 \usage{
 localLinearWrap(localModel, test, n, formula)
 }

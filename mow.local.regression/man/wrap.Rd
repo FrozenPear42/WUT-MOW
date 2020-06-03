@@ -2,9 +2,7 @@
 % Please edit documentation in R/localRegression.R
 \name{wrap}
 \alias{wrap}
-\title{Predict values for \code{test} based on the \code{train} set with
-function \code{func} calculating regression model on
-some local data of length \code{n} provided by KNN-algorithm}
+\title{Perform local regression with given regression model building algorithm}
 \usage{
 wrap(localModel, test, n, knnAlgorithm, func, formula, ...)
 }
@@ -14,6 +12,8 @@ wrap(localModel, test, n, knnAlgorithm, func, formula, ...)
 \item{test}{dataframe with test data for prediction}
 
 \item{n}{number of neighbours for kNN algoritm}
+
+\item{knnAlgorithm}{algorithm used in kNN algorithm; allowed values: \code{kd_tree}, \code{cover_tree}, \code{CR}, \code{brute}}
 
 \item{func}{function to be used in prediction}
 
@@ -25,13 +25,12 @@ wrap(localModel, test, n, knnAlgorithm, func, formula, ...)
 dataframe with prediction results
 }
 \description{
+Predict values for \code{test} based on the \code{train} set with
+function \code{func} calculating regression model on
+some local data of length \code{n} provided by KNN-algorithm
 The \code{func} will be called with \code{data} argument already provided
 based on the \code{train} set. Any additional arguments can be
 passed with \code{...} variadic argument.
-}
-\details{
-If you are passing a formula then the \code{test} set should not
-have predicted column.
 }
 \examples{
 For usage examples look at implementation of

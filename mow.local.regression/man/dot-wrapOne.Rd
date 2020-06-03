@@ -2,10 +2,28 @@
 % Please edit documentation in R/localRegression.R
 \name{.wrapOne}
 \alias{.wrapOne}
-\title{Internal function allowing to perform wrapping on single observation}
+\title{Perform local regression with given regression model building algorithm on single observation}
 \usage{
 .wrapOne(localModel, x, n, knnAlgorithm, func, formula, ...)
 }
+\arguments{
+\item{localModel}{LocalRegressionModel object builded with training data}
+
+\item{n}{number of neighbours for kNN algoritm}
+
+\item{knnAlgorithm}{algorithm used in kNN algorithm; allowed values: \code{kd_tree}, \code{cover_tree}, \code{CR}, \code{brute}}
+
+\item{func}{function to be used in prediction}
+
+\item{formula}{formula of predicted value}
+
+\item{...}{additional params to be passed to \code{func}}
+
+\item{test}{row of single observation to be predicted}
+}
+\value{
+dataframe with row with prediction result
+}
 \description{
-Internal function allowing to perform wrapping on single observation
+Function used internally for predictions in \code{wrap} function. For example usage refer \code{wrap} function implementation.
 }

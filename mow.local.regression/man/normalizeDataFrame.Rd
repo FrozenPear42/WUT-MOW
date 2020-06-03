@@ -26,5 +26,5 @@ list containing:
 }
 }
 \description{
-Normalizes dataframe for LocalRegressionModel
+Normalizes dataframe for LocalRegressionModel using provided normalization methods
 }
