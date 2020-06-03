@@ -1,5 +1,4 @@
 library(rpart)
-library(purrr)
 library(FNN)
 
 #' LocalRegressionModel S4 class generator
@@ -89,6 +88,10 @@ stripDependentVariable <- function(dataset, formula) {
   ds <- stripDependentVariable(localModel@normalizedDataset, formula)
   dx <- stripDependentVariable(normalizedX, formula)
 
+  if(n > nrow(localModel@normalizedDataset)){
+    n <- nrow(localModel@normalizedDataset)
+  }
+
   nn <- get.knnx(ds$dataset, dx$dataset, k=n, algorithm=knnAlgorithm)
   indexes <-unlist(nn$nn.index[1,], use.names = FALSE)
   nn_train <- localModel@normalizedDataset[indexes,]
@@ -175,8 +178,8 @@ normalizeEnumVector <- function(v) {
   }
 
   v <- unlist(v, use.names=FALSE)
-  vNorm <- map(v, function(x) dict[[x]]/(i - 1))
-  enumMap <- map(dict, function(x) x/(i-1))
+  vNorm <- lapply(v, function(x) dict[[x]]/(i - 1))
+  enumMap <- lapply(dict, function(x) x/(i-1))
   list(v=vNorm, map=enumMap)
 }
 
@@ -244,7 +247,6 @@ splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
   train <- rows[ind,]
   test  <- rows[!ind,]
 
-
   list(train=train, test=test)
 }
 
@@ -288,6 +290,8 @@ markClassifier <- function(localModel, test, wrappedFunc, n, formula, ...) {
     testPred = predictionsForTest,
     testError = errorForTest,
     trainPred = predictionsForTrain,
-    trainError = errorForTrain
+    trainError = errorForTrain,
   )
 }
+
+
