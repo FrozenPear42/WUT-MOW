@@ -40,7 +40,7 @@ Zbiór zawiera 17379 przykładów dotyczących wypożyczeń rowerów w systemie 
 bikes <- read.csv("https://query.data.world/s/jcpgkqdal2ztirvoahx5dmopkpzr7q", header=TRUE, stringsAsFactors=FALSE)
 bikes$Casual.Users <- NULL
 bikes$Registered.Users <- NULL
-
+bikes$Date <- NULL
 ```
 
 
@@ -147,14 +147,12 @@ errs <- sapply(ns, function(x) {
   markClassifier(rs_model, data$test, regressionTreeWrap, x, house.price.of.unit.area ~ .)$testError
 })
 print(errs)
-plot(ns, errs$mse, xlab="#neighbours", ylab="mse", type="l")
-plot(ns, errs$mre, xlab="#neighbours", ylab="mse", type="l")
-plot(ns, errs$cod_old, xlab="#neighbours", ylab="mse", type="l")
-plot(ns, errs$cod, xlab="#neighbours", ylab="mse", type="l")
+plot(ns, errs[1,], xlab="#neighbours", ylab="mse", type="l")
 ```
 
 Poniższe wykresy przedstawiają wartość średniego błędu kwadratowego, średniego błędu względnego oraz współczynnik determinacji
 w zależności od przyjętego parametru `n` oznaczającą liczbę najbliższych sąsiadów dla budowania modelu lokalnego.
+
 
 
 

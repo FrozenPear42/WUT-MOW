@@ -43,13 +43,16 @@ normalizeVector <- function(localModel, v) {
     } else {
       if(params[["type"]] == "omit") {
       } else if(params[["type"]] == "minmax") {
-        v[[i]] <- (v[[i]] - params[["min"]]) / (params[["max"]] - params[["min"]])
+        v[[i]] <- (as.numeric(v[[i]]) - params[["min"]]) / (params[["max"]] - params[["min"]])
       } else if(params[["type"]] == "zscore") {
-        v[[i]] <- (v[[i]] - params[["mean"]]) / params[["std"]]
+        v[[i]] <- (as.numeric(v[[i]]) - params[["mean"]]) / params[["std"]]
       }
     }
   }
-  return(v)
+  l <- labels(v)
+  v <- as.numeric(v, keep.labels=TRUE)
+  names(v) <- l
+  v
 }
 
 #' Removes column with dependent value from dataframe based on formula
@@ -89,12 +92,17 @@ stripDependentVariable <- function(dataset, formula) {
   normalizedX <- normalizeVector(localModel, x)
   normalizedX <- data.frame(as.list(normalizedX))
 
+  print(normalizedX)
+
   ds <- stripDependentVariable(localModel@normalizedDataset, formula)
   dx <- stripDependentVariable(normalizedX, formula)
 
   if(n > nrow(localModel@normalizedDataset)){
     n <- nrow(localModel@normalizedDataset)
   }
+
+  print(dim(ds$dataset))
+  print(dim(dx$dataset))
 
   nn <- get.knnx(ds$dataset, dx$dataset, k=n, algorithm=knnAlgorithm)
   indexes <-unlist(nn$nn.index[1,], use.names = FALSE)
@@ -211,8 +219,8 @@ normalizeDataFrame <- function(dataset, normalizationType) {
     colType = class(dataset[,i])
     if (colType == "character") {
       x <- normalizeEnumVector(dataset[, i])
-      dataset[, i] <- x$v
-      normalizationParams[[i]] <- list(dataType="chr", enumMap=x$enumMap)
+      dataset[, i] <- unlist(x$v)
+      normalizationParams[[i]] <- list(dataType="chr", enumMap=x$map)
     }
     if (colType == "integer" || colType == "float" || colType == "double" || colType == "numeric") {
       if (normalizationType[[i]] == "zscore") {
@@ -269,7 +277,7 @@ classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   partitioned <- stripDependentVariable(dataset, formula)
   stripped <- partitioned$stripped
   expected <- as.numeric(stripped[,1])
-  mean_predicted <- mean(predictions)
+  mean_expected <- mean(predictions)
   list(
     mse = mean((predictions - expected)^2),
     mre = mean(abs(predictions - expected)/predictions),
