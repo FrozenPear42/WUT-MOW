@@ -138,22 +138,63 @@ Implementacja LOESS znajdująca się w bibliotece standardowej pakietu R pozwala
 Do wygenerowania wykresów użyty został kod podobny do zapisanego poniżej.
 
 ```{r eval=FALSE}
-source('localRegression.R')
 data <- splitDataFrame(real_estate, 0.9)
 rs_model <- createLocalRegressionModel(data$train, list("zscore","zscore","zscore","zscore","zscore","zscore","omit"))
 ns <- seq(1, 401, by=100)
-errs <- sapply(ns, function(x) { 
+errs <- sapply(ns, function(x) {
   print(x)
   markClassifier(rs_model, data$test, regressionTreeWrap, x, house.price.of.unit.area ~ .)$testError
 })
-print(errs)
 plot(ns, errs[1,], xlab="#neighbours", ylab="mse", type="l")
 ```
 
 Poniższe wykresy przedstawiają wartość średniego błędu kwadratowego, średniego błędu względnego oraz współczynnik determinacji
 w zależności od przyjętego parametru `n` oznaczającą liczbę najbliższych sąsiadów dla budowania modelu lokalnego.
 
+### Zbiór "Real Estate"
+
+Dla zbioru "Real Estate" przyjeliśmy rozmiar łaczny zbioru za 414 rekordów (pełny zbiór) z podziałem 0.9 pomiędzy dane treninowe a dane testowe.
+
+![Średni błąd względny dla różnych wartości k w kNN dla zbioru "Real Estate"](mre.png)
+
+![Błąd średniokwadratowy dla różnych wartości k w kNN dla zbioru "Real Estate"](mse.png)
+
+![Współczynnik determinacji dla różnych wartości k w kNN dla zbioru "Real Estate"](cod.png)
+
+![Histogram logarytmu dziesiętnego kwadratów błędu zbioru "Real Estate"](re_hist.png)
+
+Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10$ czyli sam błąd jest na poziomie $ \pm10^{0.5}$. Co jest dość sensownym oszacowaniem.
 
 
+### Zbiór "Bikes"
+Dla zbioru "bikes" przyjeliśmy rozmiar łaczny zbioru za 1000 rekordów z podziałem 0.9 pomiędzy dane treninowe a dane testowe.
+
+![Średni błąd względny dla różnych wartości k w kNN dla zbioru "Bikes"](mre_bikes.png)
 
 
+![Błąd średniokwadratowy dla różnych wartości k w kNN dla zbioru "Bikes"](mse_bikes.png)
+
+
+![Histogram logarytmu dziesiętnego kwadratów błędu zbioru "Bikes"](bikes_hsit.png)
+
+Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10^2$ czyli sam błąd jest na poziomie $ \pm10^1$. Jest to dość duży błąd oszacowania patrząc na wartości w zbiorze testowym.
+
+Przypuszczamy, że duże wartości błędów MSE pochodzą z pojawienia się w danych testowych wektora znacznie oddalonego od pozostałych wartości. Spowodowało to wyznaczenie znacznie większej wartości od oczekiwanej, co przy podniesieniu do kwadratu dało bardzo duży udział w błędzie. Potencjaln
+
+### Zbiór "Cars"
+
+Dla zbioru "Cars" przyjeliśmy rozmiar łaczny zbioru za 1000 rekordów z podziałem 0.9 pomiędzy dane treninowe a dane testowe.
+
+![Średni błąd względny dla różnych wartości k w kNN dla zbioru "Cars"](cars_mre.png)
+
+
+![Błąd średniokwadratowy dla różnych wartości k w kNN dla zbioru "Cars"](mse_cars.png)
+
+![Histogram logarytmu dziesiętnego kwadratów błędu zbioru "Cars"](cars_hist.png)
+
+Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10^6$ czyli sam błąd jest na poziomie $ \pm10^3$. Jak na wartość samochodu błąd na poziomie $10^3$ wydaje się całkiem sensownym oszacowaniem.
+
+
+## Podsumowanie
+
+Część implementacyjną projektu udało się przeprowadzić bez większych przeszkód (poza zmaganiami z nietypowymi zachowaniami R dla wektorów nazwanych). Część testowa została niestety mocno ograniczona przez wydajności komputerów na których dokonywaliśmy testów. Przy dużych zbiorach danych (>1000) dostawaliśmy błędy alokacji pamięci. Jest to jeden z powodów dla których nasze testy nie dały bardzo satysfakcjonujących rezultatów - zbiory danych były ciekawe do szukania w nich zależności i wykonania regresji, jednak dla tak małego subzbioru ciężko taką zależność znaleźć. Dodatkowo uzyskaliśmy znaczne błędy (w szczegółności MSE) które też z dużym prawdopodobieństwem pochodzą od zbyt małego zbioru danych treningowych. Jednak dla dostatecznie małych danych oraz wartościach o których możemy się domyślać co do zależności zaprojektowany algorytm sprawdza się całkiem dobrze.

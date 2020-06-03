@@ -92,17 +92,12 @@ stripDependentVariable <- function(dataset, formula) {
   normalizedX <- normalizeVector(localModel, x)
   normalizedX <- data.frame(as.list(normalizedX))
 
-  # print(normalizedX)
-
   ds <- stripDependentVariable(localModel@normalizedDataset, formula)
   dx <- stripDependentVariable(normalizedX, formula)
 
   if(n > nrow(localModel@normalizedDataset)){
     n <- nrow(localModel@normalizedDataset)
   }
-
-  # print(dim(ds$dataset))
-  # print(dim(dx$dataset))
 
   nn <- get.knnx(ds$dataset, dx$dataset, k=n, algorithm=knnAlgorithm)
   indexes <-unlist(nn$nn.index[1,], use.names = FALSE)
