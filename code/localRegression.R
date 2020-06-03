@@ -35,7 +35,11 @@ normalizeVector <- function(localModel, v) {
   {
     params <- localModel@normalizationParams[[i]]
     if(params[["dataType"]] == "chr") {
-      v[[i]] <- normalizeChrVec(v[[i]])
+      if (v[[i]] %in% params$enumMap) {
+        v[[i]] <- params$enumMap[[v[[i]]]]
+      } else {
+        v[[i]] <- 0
+      }
     } else {
       if(params[["type"]] == "omit") {
       } else if(params[["type"]] == "minmax") {
@@ -206,8 +210,9 @@ normalizeDataFrame <- function(dataset, normalizationType) {
   for(i in 1:nCols) {
     colType = class(dataset[,i])
     if (colType == "character") {
-      dataset[, i] <- normalizeEnumVector(dataset[, i])
-      normalizationParams[[i]] <- list(dataType="chr")
+      x <- normalizeEnumVector(dataset[, i])
+      dataset[, i] <- x$v
+      normalizationParams[[i]] <- list(dataType="chr", enumMap=x$enumMap)
     }
     if (colType == "integer" || colType == "float" || colType == "double" || colType == "numeric") {
       if (normalizationType[[i]] == "zscore") {

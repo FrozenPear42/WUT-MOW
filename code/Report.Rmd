@@ -93,7 +93,26 @@ Pozostałe nieprywatne funkcje w pakiecie są używane jako funkcje pomocnicze p
  
 Pełną dokumentację wskazanych funkcji mozna uzyskać stosując polecenie `?functionName` w pakiecie R.
 
-### Implementacja algorytmów
+### Implementacja pakietu
+
+Głownym celem projektowanego pakietu było stworzenie "wrappera" -narzędzia pozwalającego na użycie istniejacych funkcji budowania modelu regresji w kontekscie regresji lokalnej.
+
+Działanie pakietu oparte jest wokół klasy S4 `LocalRegressionModel`. Przechowuje ona model danych oraz informacje o normalizacji danych. Obiekt tej klasy może zostać stworzony przy użyciu funkcji `createLocalRegressionModel` z przekazaniem `data.frame` z danymi treningowymi oraz wektorem opisującym sposób normalizacji. Z użyciem utworzonego obiektu można następnie używać metody `wrap` która pozwala na wykonanie regresji lokalnej przy użyciu wskazanej funkcji budowania modelu regresji. 
+
+Wewnętrze działanie funkcji `wrap` składa się z wykonania dla każdego rekordu w przekazanym `data.frame` danych testowych następujących kroków: 
+1. Normalizacja przekazanego wektora z użyciem parametrów wskazanych w obiekcie `LocalRegressionModel`
+2. Znalezienie najbliższych sąsiadów z użyciem algorytmu kNN (dla zadanego k)
+3. Predykcja wartości z użyciem modelu wskazanego dla funkcji wrap
+
+Dostępne są także specjalizowane implementacje funkcji `wrap`: `localLinearWrap` oraz `regressionTreeWrap` pozwalające na wykonanie regresji z modelami odpowiednio `lm` oraz `kpart`.
+
+Typowy przepływ użycia pakietu składa się z następujących kroków:
+1. Utworzenie modelu regresji liniowej z użyciem funkcji `createLocalRegressionModel`
+2. Użycie funkcji `wrap` w celu wykonanania regresji lokalnej
+
+Losowego podziału na partycje testową i treningową mozna dokonac za pomocą funkcji `splitDataFrame`.
+
+Funkcja normalizująca dane zastosowana w pakiecie obsługuje dane numeryczne oraz tekstowe. Należy jednak zwrócić uwagę na to, że dane tekstowe zostaną automatycznie potraktowane jako dane enumerujące (atrybuty dyskretne) i zostaną odpowiednio zamienione na znormalizowane wartości liczbowe. Istnieje założenie o zupełności wartości w tej kolumnie (przy badaniu nie będą pojawiały się wartości inne niż któraś z tych w danych treningowych). W przypadku niezgodności algorytm wypisze ostrzerzenie oraz potraktuje znormalizowaną wartość jako $0$.
 
 Funkcja `wrap` opakowuje funkcję do budowania modelu liniowego i dokonuje predykcji z
 użyciem modelu lokalnego wyznaczonego przez funkcję `get.knn`.
@@ -128,6 +147,8 @@ print(c("For n=100:      ", wrap(rs_model, real_estate[1,], 100, "cover_tree", r
 ## Metody regresji lokalnej z pakietu R
 ### LOESS
 LOESS (_locally estimated scatterplot smoothing_) jest algorytmem pozwalającym na uzyskanie regresji lokalnej z użyciem wielomianów oraz metody kNN. Jego działanie opiera się na znalezieniu odpowiedniego otoczenia badanego punktu przy pomocy algorytmu kNN z użyciem metryki ważonej. Następnie przy użyciu znalezionego otoczenia wyznaczana jest wielomianowe dopasowanie funkcji do znalezionych punktów. Z dopasowaniej funkcji znajdowana jest oczekiwana wartość dla wektora dla którego poszukujemy przewidywanej wartości. Jest to gotowy algorytm pozwalający na regresję lokalną. Stosowany jest często do wygładzania wykresów oraz wygładzania sygnałów w zagadnieniach DSP (pod nazwą: filtr Savitzky–Golay'a). 
+
+Implementacja LOESS znajdująca się w bibliotece standardowej pakietu R pozwala na predykcję zależności z maksymalnie czterema zmiennymi zależnymi. Jest to znaczne ogranicznenie w przypadku wybranych przez nas zbiorów danych.
 
 ## Wyniki i porównanie z metodami regresji lokalnej dostępnymi w pakiecie R
 ```{r}
