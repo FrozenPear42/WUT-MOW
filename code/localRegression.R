@@ -158,7 +158,8 @@ normalizeDataFrame <- function(dataset, normalizationType) {
 
 .classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   partitioned <- stripDependentVariable(dataset, formula)
-  mean((as.vector(partitioned$stripped) - predictions)^2) # TODO: will it even like work?
+  stripped <- partitioned$stripped
+  mean((as.numeric(stripped[1,]) - predictions)^2) # TODO: will it even like work?
 }
 
 #' Mark classifier returning errors along with predictions
@@ -174,19 +175,18 @@ normalizeDataFrame <- function(dataset, normalizationType) {
 #' along with predictions of the \code{wrappedFunc} for the train and test data.
 #' @examples
 #' classInfo <- .markClassifier(localModel, test, regressionTreeWrap, Sepal.Length~.)
-.markClassifier <- function(localModel, test, wrappedFunc, formula, ...) {
-  predictionsForTrain <- wrappedFunc(localModel, localModel$dataset, formula, ...)
+markClassifier <- function(localModel, test, wrappedFunc, formula, ...) {
+  predictionsForTrain <- wrappedFunc(localModel, localModel@normalizedDataset, formula, ...)
   predictionsForTest <- wrappedFunc(localModel, test, formula, ...)
-  errorForTrain <- .classifierErrorOnSigleSet(localModel$dataset, predictionsForTrain, formula)
-  errorForTest <- .classifierErrorOnSigleSet(train, predictionsForTest, formula)
+  errorForTrain <- .classifierErrorOnSigleSet(localModel@normalizedDataset, predictionsForTrain, formula)
+  errorForTest <- .classifierErrorOnSigleSet(test, predictionsForTest, formula)
   list(
     testPred = predictionsForTest,
     testError = errorForTest,
     trainPred = predictionsForTrain,
-    trainError = errorForTrain,
+    trainError = errorForTrain
   )
 }
-
 
 
 
