@@ -264,11 +264,11 @@ classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   partitioned <- stripDependentVariable(dataset, formula)
   stripped <- partitioned$stripped
   expected <- as.numeric(stripped[,1])
-  mean_expected <- mean(expected)
+  mean_predicted <- mean(predictions)
   list(
-    mse = mean((predictions - mean_expected)^2),
+    mse = mean((predictions - expected)^2),
     mre = mean(abs(predictions - expected)/predictions),
-    cod = sum((predictions-mean_expected)^2)/sum((expected-mean_expected)^2)
+    cod = sum((predictions-mean_predicted)^2)/sum((expected-mean_predicted)^2)
   )
 }
 
