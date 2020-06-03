@@ -263,8 +263,12 @@ splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
 classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   partitioned <- stripDependentVariable(dataset, formula)
   stripped <- partitioned$stripped
-  stripped_vec <- as.numeric(stripped[,1])
-  mean((stripped_vec - predictions)^2) # TODO: will it even like work?
+  expected <- as.numeric(stripped[,1])
+  mean_expected <- mean(expected)
+  list(
+    mse = mean((predictions - mean_expected)^2),
+    mre = mean(abs(predictions - expected)/predictions)
+  )
 }
 
 #' Get errors of predictions
