@@ -199,6 +199,19 @@ Dla zbioru "Cars" przyjeliśmy rozmiar łaczny zbioru za 1000 rekordów z podzia
 Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10^6$ czyli sam błąd jest na poziomie $ \pm10^3$. Jak na wartość samochodu błąd na poziomie $10^3$ wydaje się całkiem sensownym oszacowaniem.
 
 
+Funkcje `lm` i `rpart` poradziły sobie następująco:
+
+=======
+|           | lm estates | rpart estates | lm bikes | rpart bikes | lm cars   | rpart cars |
+|-----------|------------|---------------|----------|-------------|-----------|------------|
+| train mse | 77.52      | 45.81         | 20691.72 | 10505.44    | 36350873  | 698879842  |
+| train mre | 0.26       | 0.13          | 0.51     | 0.56        | -0.21     | 0.83       |
+| train cod | 0.26       | 0.67          | -------  | 0.47        | 0.79      | -0.86      |
+| test mse  | 73.52      | 74.47         | 23001.75 | 14469.54    | 170134632 | 21159213   |
+| test mre  | 0.19       | 0.17          | 0.50     | 0.54        | -0.53     | 0.47       |
+| test cod  | 0.38       | 0.51          | -------- | 0.30        | 0.14      | 0.89       |
+
+=======
 ## Podsumowanie
 
 Część implementacyjną projektu udało się przeprowadzić bez większych przeszkód (poza zmaganiami z nietypowymi zachowaniami R dla wektorów nazwanych). Część testowa została niestety mocno ograniczona przez wydajności komputerów na których dokonywaliśmy testów. Przy dużych zbiorach danych (>1000) dostawaliśmy błędy alokacji pamięci. Jest to jeden z powodów dla których nasze testy nie dały bardzo satysfakcjonujących rezultatów - zbiory danych były ciekawe do szukania w nich zależności i wykonania regresji, jednak dla tak małego podzbioru ciężko taką zależność znaleźć. Dodatkowo uzyskaliśmy znaczne błędy (w szczegółności MSE) które też z dużym prawdopodobieństwem pochodzą od zbyt małego zbioru danych treningowych. Jednak dla dostatecznie małych danych oraz wartościach o których możemy się domyślać co do zależności zaprojektowany algorytm sprawdza się całkiem dobrze.
