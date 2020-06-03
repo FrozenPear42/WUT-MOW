@@ -1,8 +1,6 @@
-library(rpart)
-library(FNN)
-
 #' LocalRegressionModel S4 class generator
 #' Reserved for internal use, to create LocalRegressionModel use `createLocalRegressionModel` function
+#' @export
 LocalRegressionModel <- setClass("LocalRegressionModel", slots=list(dataset="data.frame",
                                                                     normalizedDataset="data.frame",
                                                                     normalizationParams="list"))
@@ -18,6 +16,7 @@ LocalRegressionModel <- setClass("LocalRegressionModel", slots=list(dataset="dat
 #' Character collumns will be normalized by default with `minmax` algorithm, normalization type value has no effect in that case
 #'
 #' @return Local regression model object
+#' @export
 createLocalRegressionModel <- function(dataset, normalizationTypes) {
   norm <- normalizeDataFrame(dataset, normalizationTypes)
   LocalRegressionModel(dataset=dataset, normalizedDataset=norm[[1]], normalizationParams=norm[[2]])
@@ -30,6 +29,7 @@ createLocalRegressionModel <- function(dataset, normalizationTypes) {
 #' Provided vector can be shorter than vectors in regression model.
 #'
 #' @return normalized vector
+#' @export
 normalizeVector <- function(localModel, v) {
   for(i in 1:length(v))
   {
@@ -63,6 +63,7 @@ normalizeVector <- function(localModel, v) {
 #' @return list containing:
 #' - `dataset` - dataframe without column of dependent variable
 #' - `stripped` - removed column
+#' @export
 stripDependentVariable <- function(dataset, formula) {
   depVar <- all.vars(formula)[1]
   if (depVar %in% colnames(dataset)) {
@@ -87,7 +88,6 @@ stripDependentVariable <- function(dataset, formula) {
 #' @param ... additional params to be passed to `func`
 #'
 #' @return dataframe with row with prediction result
-#'
 .wrapOne <- function(localModel, x, n, knnAlgorithm, func, formula, ...) {
   normalizedX <- normalizeVector(localModel, x)
   normalizedX <- data.frame(as.list(normalizedX))
@@ -128,6 +128,8 @@ stripDependentVariable <- function(dataset, formula) {
 #' @examples
 #' For usage examples look at implementation of
 #' `localLinear.wrap` and `regressionTree.wrap` functions.
+#' @import FNN
+#' @export
 wrap <- function(localModel, test, n, knnAlgorithm, func, formula, ...) {
   apply(test, 1, function(row) .wrapOne(localModel, row, n, knnAlgorithm, func, formula, ...))
 }
@@ -143,6 +145,7 @@ wrap <- function(localModel, test, n, knnAlgorithm, func, formula, ...) {
 #' @param formula formula of predicted value
 #'
 #' @return dataframe of predicted values
+#' @export
 localLinearWrap <- function(localModel, test, n, formula) {
   wrap(localModel, test, n, "cover_tree", lm, formula)
 }
@@ -159,6 +162,8 @@ localLinearWrap <- function(localModel, test, n, formula) {
 #' @param method regression tree building method from `rpart` package
 #'
 #' @return dataframe of predicted values
+#' @import rpart
+#' @export
 regressionTreeWrap <- function(localModel, test, n, formula, method="anova") {
   wrap(localModel, test, n, "cover_tree", rpart, formula, method=method)
 }
@@ -176,6 +181,7 @@ regressionTreeWrap <- function(localModel, test, n, formula, method="anova") {
 #' r <- normalizeEnum(c("a", "a", "b"))
 #' # r$v = [0, 0, 1]
 #' # r$map = list(a=0, b=1)
+#' @export
 normalizeEnumVector <- function(v) {
   i <- 0
   dict <- list()
@@ -207,6 +213,7 @@ normalizeEnumVector <- function(v) {
 #' - `dataset` - normalized dataframe
 #' - `normalizationParams` - params used for normalization. Those values can be used to normalize vector outside dataset with same params.
 #'
+#' @export
 normalizeDataFrame <- function(dataset, normalizationType) {
   nCols <- ncol(dataset)
   normalizationParams <-list()
@@ -248,6 +255,7 @@ normalizeDataFrame <- function(dataset, normalizationType) {
 #' @return list containing:
 #'  - `$train` train dataframe with $n * ratio$ rows
 #'  - `$test` test dataframe with $n * (1 - ratio)$ rows
+#' @export
 splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
   rows <- dataframe[sample(nrow(dataframe), n), ]
 
@@ -268,6 +276,7 @@ splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
 #' @param formula formula used in predictions
 #'
 #' @return MSE of predictions in given dataset
+#' @export
 classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   partitioned <- stripDependentVariable(dataset, formula)
   stripped <- partitioned$stripped
@@ -295,6 +304,7 @@ classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
 #'
 #' @examples
 #' classInfo <- .markClassifier(localModel, test, regressionTreeWrap, Sepal.Length~.)
+#' @export
 markClassifier <- function(localModel, test, wrappedFunc, n, formula, ...) {
   predictionsForTrain <- wrappedFunc(localModel, localModel@dataset, n, formula, ...)
   predictionsForTest <- wrappedFunc(localModel, test, n, formula, ...)
