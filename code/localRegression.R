@@ -92,7 +92,7 @@ stripDependentVariable <- function(dataset, formula) {
   normalizedX <- normalizeVector(localModel, x)
   normalizedX <- data.frame(as.list(normalizedX))
 
-  print(normalizedX)
+  # print(normalizedX)
 
   ds <- stripDependentVariable(localModel@normalizedDataset, formula)
   dx <- stripDependentVariable(normalizedX, formula)
@@ -101,8 +101,8 @@ stripDependentVariable <- function(dataset, formula) {
     n <- nrow(localModel@normalizedDataset)
   }
 
-  print(dim(ds$dataset))
-  print(dim(dx$dataset))
+  # print(dim(ds$dataset))
+  # print(dim(dx$dataset))
 
   nn <- get.knnx(ds$dataset, dx$dataset, k=n, algorithm=knnAlgorithm)
   indexes <-unlist(nn$nn.index[1,], use.names = FALSE)
@@ -277,7 +277,7 @@ classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
   partitioned <- stripDependentVariable(dataset, formula)
   stripped <- partitioned$stripped
   expected <- as.numeric(stripped[,1])
-  mean_expected <- mean(predictions)
+  mean_predicted <- mean(predictions)
   list(
     mse = mean((predictions - expected)^2),
     mre = mean(abs(predictions - expected)/predictions),
