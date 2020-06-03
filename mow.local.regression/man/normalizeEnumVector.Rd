@@ -2,7 +2,7 @@
 % Please edit documentation in R/localRegression.R
 \name{normalizeEnumVector}
 \alias{normalizeEnumVector}
-\title{Converts vector of enum values (eg chr \link{"bmw", "bmw", "ferrari"}) to vector of normalized values in range \link{0,1}}
+\title{Converts vector of enum values}
 \usage{
 normalizeEnumVector(v)
 }

@@ -1,5 +1,4 @@
 library(rpart)
-library(purrr)
 library(FNN)
 
 #' LocalRegressionModel S4 class generator
@@ -36,17 +35,24 @@ normalizeVector <- function(localModel, v) {
   {
     params <- localModel@normalizationParams[[i]]
     if(params[["dataType"]] == "chr") {
-      v[[i]] <- normalizeChrVec(v[[i]])
+      if (v[[i]] %in% params$enumMap) {
+        v[[i]] <- params$enumMap[[v[[i]]]]
+      } else {
+        v[[i]] <- 0
+      }
     } else {
       if(params[["type"]] == "omit") {
       } else if(params[["type"]] == "minmax") {
-        v[[i]] <- (v[[i]] - params[["min"]]) / (params[["max"]] - params[["min"]])
+        v[[i]] <- (as.numeric(v[[i]]) - params[["min"]]) / (params[["max"]] - params[["min"]])
       } else if(params[["type"]] == "zscore") {
-        v[[i]] <- (v[[i]] - params[["mean"]]) / params[["std"]]
+        v[[i]] <- (as.numeric(v[[i]]) - params[["mean"]]) / params[["std"]]
       }
     }
   }
-  return(v)
+  l <- labels(v)
+  v <- as.numeric(v, keep.labels=TRUE)
+  names(v) <- l
+  v
 }
 
 #' Removes column with dependent value from dataframe based on formula
@@ -68,8 +74,19 @@ stripDependentVariable <- function(dataset, formula) {
   list(dataset=dataset, stripped=stripped)
 }
 
-#' Internal function allowing to perform wrapping on single observation
+#' Perform local regression with given regression model building algorithm on single observation
 #'
+#' Function used internally for predictions in `wrap` function. For example usage refer `wrap` function implementation.
+#'
+#' @param localModel LocalRegressionModel object builded with training data
+#' @param test row of single observation to be predicted
+#' @param n number of neighbours for kNN algoritm
+#' @param knnAlgorithm algorithm used in kNN algorithm; allowed values: `kd_tree`, `cover_tree`, `CR`, `brute`
+#' @param func function to be used in prediction
+#' @param formula formula of predicted value
+#' @param ... additional params to be passed to `func`
+#'
+#' @return dataframe with row with prediction result
 #'
 .wrapOne <- function(localModel, x, n, knnAlgorithm, func, formula, ...) {
   normalizedX <- normalizeVector(localModel, x)
@@ -78,6 +95,10 @@ stripDependentVariable <- function(dataset, formula) {
   ds <- stripDependentVariable(localModel@normalizedDataset, formula)
   dx <- stripDependentVariable(normalizedX, formula)
 
+  if(n > nrow(localModel@normalizedDataset)){
+    n <- nrow(localModel@normalizedDataset)
+  }
+
   nn <- get.knnx(ds$dataset, dx$dataset, k=n, algorithm=knnAlgorithm)
   indexes <-unlist(nn$nn.index[1,], use.names = FALSE)
   nn_train <- localModel@normalizedDataset[indexes,]
@@ -85,21 +106,19 @@ stripDependentVariable <- function(dataset, formula) {
   predict(model, normalizedX)
 }
 
+#' Perform local regression with given regression model building algorithm
+#'
 #' Predict values for `test` based on the `train` set with
 #' function `func` calculating regression model on
 #' some local data of length `n` provided by KNN-algorithm
-#'
 #' The `func` will be called with `data` argument already provided
 #' based on the `train` set. Any additional arguments can be
 #' passed with `...` variadic argument.
 #'
-#' If you are passing a formula then the `test` set should not
-#' have predicted column.
-#'
 #' @param localModel LocalRegressionModel object builded with training data
 #' @param test dataframe with test data for prediction
 #' @param n number of neighbours for kNN algoritm
-#' @param knnAlgorithm algorithm used in kNN algorithm; allowed values: `kd_tree`, `cover_tree`, `CR`, `brute`\
+#' @param knnAlgorithm algorithm used in kNN algorithm; allowed values: `kd_tree`, `cover_tree`, `CR`, `brute`
 #' @param func function to be used in prediction
 #' @param formula formula of predicted value
 #' @param ... additional params to be passed to `func`
@@ -113,8 +132,10 @@ wrap <- function(localModel, test, n, knnAlgorithm, func, formula, ...) {
   apply(test, 1, function(row) .wrapOne(localModel, row, n, knnAlgorithm, func, formula, ...))
 }
 
+#' Perform local regression with `lm` regression model
+#'
 #' `wrap` function using linear model as regression model.
-#'  Predicts values in test dataframe based on passed formula and LocalRegressionModel.
+#' Predicts values in test dataframe based on passed formula and LocalRegressionModel.
 #'
 #' @param localModel LocalRegressionModel object builded with training data
 #' @param test dataframe with test data for prediction
@@ -126,8 +147,10 @@ localLinearWrap <- function(localModel, test, n, formula) {
   wrap(localModel, test, n, "cover_tree", lm, formula)
 }
 
+#' Perform local regression with `rpart` regression model
+#'
 #' `wrap` function using regression tree to build regression model.
-#'  Predicts values in test dataframe based on passed formula and LocalRegressionModel.
+#' Predicts values in test dataframe based on passed formula and LocalRegressionModel.
 #'
 #' @param localModel LocalRegressionModel object builded with training data
 #' @param test dataframe with test data for prediction
@@ -137,10 +160,12 @@ localLinearWrap <- function(localModel, test, n, formula) {
 #'
 #' @return dataframe of predicted values
 regressionTreeWrap <- function(localModel, test, n, formula, method="anova") {
-  wrap(localModel, test, n, "cover_tree", rpart, formula, method)
+  wrap(localModel, test, n, "cover_tree", rpart, formula, method=method)
 }
 
 
+#' Converts vector of enum values
+#'
 #' Converts vector of enum values (eg chr ["bmw", "bmw", "ferrari"]) to vector of normalized values in range [0,1]
 #'
 #' @param v vector to be normalized
@@ -160,12 +185,15 @@ normalizeEnumVector <- function(v) {
   }
 
   v <- unlist(v, use.names=FALSE)
-  vNorm <- map(v, function(x) dict[[x]]/(i - 1))
-  enumMap <- map(dict, function(x) x/(i-1))
+  vNorm <- lapply(v, function(x) dict[[x]]/(i - 1))
+  enumMap <- lapply(dict, function(x) x/(i-1))
   list(v=vNorm, map=enumMap)
 }
 
+
 #' Normalizes dataframe for LocalRegressionModel
+#'
+#' Normalizes dataframe for LocalRegressionModel using provided normalization methods
 #'
 #' @param dataset dataframe with data to be normalized
 #' @param normalizationType vector of normalization method for each column.
@@ -185,8 +213,9 @@ normalizeDataFrame <- function(dataset, normalizationType) {
   for(i in 1:nCols) {
     colType = class(dataset[,i])
     if (colType == "character") {
-      dataset[, i] <- normalizeEnumVector(dataset[, i])
-      normalizationParams[[i]] <- list(dataType="chr")
+      x <- normalizeEnumVector(dataset[, i])
+      dataset[, i] <- unlist(x$v)
+      normalizationParams[[i]] <- list(dataType="chr", enumMap=x$map)
     }
     if (colType == "integer" || colType == "float" || colType == "double" || colType == "numeric") {
       if (normalizationType[[i]] == "zscore") {
@@ -208,16 +237,52 @@ normalizeDataFrame <- function(dataset, normalizationType) {
 }
 
 
+#' Split dataset into training set and test set
 #'
+#' Splits dataframe randomly into two dataframs at given ratio. You can provide total number of returned rows (chosen randomly form given set).
 #'
+#' @param dataframe dataframe to be splitted
+#' @param ratio splitting ratio ([0, 1] value determining how much of dataset will be placed in train set)
+#' @param n number of total rows in output dataframes
 #'
-.classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
-  partitioned <- stripDependentVariable(dataset, formula)
-  mean((as.vector(partitioned$stripped) - predictions)^2) # TODO: will it even like work?
+#' @return list containing:
+#'  - `$train` train dataframe with $n * ratio$ rows
+#'  - `$test` test dataframe with $n * (1 - ratio)$ rows
+splitDataFrame <- function(dataframe, ratio, n=nrow(dataframe)) {
+  rows <- dataframe[sample(nrow(dataframe), n), ]
+
+  ind   <- sample(c(TRUE, FALSE), n, replace=TRUE, prob=c(ratio, 1-ratio))
+  train <- rows[ind,]
+  test  <- rows[!ind,]
+
+  list(train=train, test=test)
 }
 
-#' Mark classifier returning errors along with predictions
-#' on train and test datasets.
+
+#' calculates MSE (mean square error) of predictions on given dataset
+#'
+#' calculates MSE (mean square error) of predictions on given dataset using passed formula
+#'
+#' @param dataset dataframe of dataset to calculate MSE prediction error
+#' @param predictions dataframe of predictions
+#' @param formula formula used in predictions
+#'
+#' @return MSE of predictions in given dataset
+classifierErrorOnSigleSet <- function(dataset, predictions, formula) {
+  partitioned <- stripDependentVariable(dataset, formula)
+  stripped <- partitioned$stripped
+  expected <- as.numeric(stripped[,1])
+  mean_predicted <- mean(predictions)
+  list(
+    mse = mean((predictions - expected)^2),
+    mre = mean(abs(predictions - expected)/predictions),
+    cod =  1 - sum((expected - predictions)^2)/sum((predictions-mean_predicted)^2)
+  )
+}
+
+#' Get errors of predictions
+#'
+#' Mark classifier returning errors along with predictions on train and test datasets.
 #'
 #' @param localModel model created with \code{createLocalRegressionModel} function
 #' @param test dataset containing test data (along with the predicted column)
@@ -227,22 +292,18 @@ normalizeDataFrame <- function(dataset, normalizationType) {
 #'
 #' @return list of four element sqared mean error on test and train data
 #' along with predictions of the \code{wrappedFunc} for the train and test data.
+#'
 #' @examples
 #' classInfo <- .markClassifier(localModel, test, regressionTreeWrap, Sepal.Length~.)
-.markClassifier <- function(localModel, test, wrappedFunc, formula, ...) {
-  predictionsForTrain <- wrappedFunc(localModel, localModel$dataset, formula, ...)
-  predictionsForTest <- wrappedFunc(localModel, test, formula, ...)
-  errorForTrain <- .classifierErrorOnSigleSet(localModel$dataset, predictionsForTrain, formula)
-  errorForTest <- .classifierErrorOnSigleSet(train, predictionsForTest, formula)
+markClassifier <- function(localModel, test, wrappedFunc, n, formula, ...) {
+  predictionsForTrain <- wrappedFunc(localModel, localModel@dataset, n, formula, ...)
+  predictionsForTest <- wrappedFunc(localModel, test, n, formula, ...)
+  errorForTrain <- classifierErrorOnSigleSet(localModel@dataset, predictionsForTrain, formula)
+  errorForTest <- classifierErrorOnSigleSet(test, predictionsForTest, formula)
   list(
     testPred = predictionsForTest,
     testError = errorForTest,
     trainPred = predictionsForTrain,
-    trainError = errorForTrain,
+    trainError = errorForTrain
   )
 }
-
-
-
-
-

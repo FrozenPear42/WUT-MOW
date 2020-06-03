@@ -1,6 +1,6 @@
 Package: mow.local.regression
 Title: Local linear regression package
-Version: 0.0.0.9000
+Version: 0.0.0.9100
 Authors@R: 
     person(given = "Wojciech",
            family = "Gruszka",
@@ -17,5 +17,5 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Imports:
-    rpart
+    rpart,
     FNN

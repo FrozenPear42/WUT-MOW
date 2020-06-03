@@ -2,8 +2,7 @@
 % Please edit documentation in R/localRegression.R
 \name{regressionTreeWrap}
 \alias{regressionTreeWrap}
-\title{\code{wrap} function using regression tree to build regression model.
-Predicts values in test dataframe based on passed formula and LocalRegressionModel.}
+\title{Perform local regression with \code{rpart} regression model}
 \usage{
 regressionTreeWrap(localModel, test, n, formula, method = "anova")
 }
