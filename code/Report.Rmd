@@ -134,12 +134,18 @@ LOESS (_locally estimated scatterplot smoothing_) jest algorytmem pozwalającym 
 Implementacja LOESS znajdująca się w bibliotece standardowej pakietu R pozwala na predykcję zależności z maksymalnie czterema zmiennymi zależnymi. Jest to znaczne ogranicznenie w przypadku wybranych przez nas zbiorów danych.
 
 ## Wyniki i porównanie z metodami regresji lokalnej dostępnymi w pakiecie R
-```{r}
+
+Do wygenerowania wykresów użyty został kod podobny do zapisanego poniżej.
+
+```{r eval=FALSE}
 source('localRegression.R')
 data <- splitDataFrame(real_estate, 0.9)
 rs_model <- createLocalRegressionModel(data$train, list("zscore","zscore","zscore","zscore","zscore","zscore","omit"))
 ns <- seq(1, 401, by=100)
-errs <- sapply(ns, function(x) { print(x); markClassifier(rs_model, data$test, regressionTreeWrap, x, house.price.of.unit.area ~ .)$testError}) # change the `mse` at the end to the value that you are interested in
+errs <- sapply(ns, function(x) { 
+  print(x)
+  markClassifier(rs_model, data$test, regressionTreeWrap, x, house.price.of.unit.area ~ .)$testError
+})
 print(errs)
 plot(ns, errs$mse, xlab="#neighbours", ylab="mse", type="l")
 plot(ns, errs$mre, xlab="#neighbours", ylab="mse", type="l")
@@ -147,11 +153,9 @@ plot(ns, errs$cod_old, xlab="#neighbours", ylab="mse", type="l")
 plot(ns, errs$cod, xlab="#neighbours", ylab="mse", type="l")
 ```
 
-### Model regresji liniowej
+Poniższe wykresy przedstawiają wartość średniego błędu kwadratowego, średniego błędu względnego oraz współczynnik determinacji
+w zależności od przyjętego parametru `n` oznaczającą liczbę najbliższych sąsiadów dla budowania modelu lokalnego.
 
-!!! DAĆ WYNIKI !!!
 
-### Model drzew regresji
 
-!!! DAĆ WYNIKI !!!
 
