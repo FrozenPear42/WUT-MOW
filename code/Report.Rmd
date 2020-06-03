@@ -21,8 +21,7 @@ W ramach projektu należało napisać z użyciem pakietu R biblioteki/funkcji, k
 W ramach projektu miały zostać przeprowadzone testy sprawdzające działanie usyskanego kodu dla kilku algorytmów oraz zbiorów danych.
 
 ## Czemu warto zająć się takim zagadnieniem
-Samo zadanie jest dość ciekawe ze względu na to, że istnieją sensowne algorytmy pozwalające na realizację regresji lokalnej takie jak _LOES_ czy _LOWESS_. Jednym z powodów może być tutaj chęć przetestowania sprawności algorytmów regresji w trybie lokalnym i weryfikacji poprawności ich działania. Zastosowanie algorytmów budowanaia modeli regresji w trybie lokalnym pozwala na znaczne zmniejszenie czasu i zasobów potrzebnych do wykonania predykcji, co wynika ze znacznego ograniczenia liczebności danych trenujących do tylko tych z bezpośredniego obszaru (k-najbliższych sąsiadów).
-
+Samo zadanie jest dość ciekawe ze względu na to, że istnieją sensowne algorytmy pozwalające na realizację regresji lokalnej takie jak _LOESS_ czy _LOWESS_. Jednym z powodów może być tutaj chęć przetestowania sprawności algorytmów regresji w trybie lokalnym i weryfikacji poprawności ich działania. Zastosowanie algorytmów budowanaia modeli regresji w trybie lokalnym pozwala na znaczne zmniejszenie czasu i zasobów potrzebnych do wykonania predykcji, co wynika ze znacznego ograniczenia liczebności danych trenujących do tylko tych z bezpośredniego obszaru (k-najbliższych sąsiadów). Zastosowanie modelu lokalnego pozwala także na obserwację zagadnień o nieliniowej chrakterystyce, jako, że w odpowiednio wąskim otoczeniu taka zależność będzie wykazywała właściwości liniowe (podobnie jak w szeregu Taylora).
 
 ## Zbiory danych
 Do projektu musieliśmy wybrać zbiory danych testowych które powinny spełniać wymagania:
@@ -30,7 +29,7 @@ Do projektu musieliśmy wybrać zbiory danych testowych które powinny spełnia�
  - zmienna objaśniana powinna być ciągła lub zachowywać sens w przypadku interpolacji (np. ocena filmu w skali dyskretnej 1-10 zachowuje sens dla wartości 9.81)
  - zbiór danych powinien zawierać odpowiednio dużo przykładów
 
-Po długich poszukiwaniach sensownych i odpowiednio ciekawych danych do analizy na dostępnych portalach udostępniających zbiory danych (Kaggle, Data.World) zdecydowaliśmy się na następujące propozycje:
+Po długich poszukiwaniach sensownych i odpowiednio ciekawych danych do analizy na dostępnych portalach udostępniających zbiory danych (Kaggle, Data.World) zdecydowaliśmy się na trzy zbiory danych przedstawione poniżej.
 
 ### Zbiór dancyh wypożyceń rowerów w systemie wypożyczalni
 Dane pochodzą ze strony: [https://data.world/data-society/capital-bikeshare-2011-2012]().
@@ -66,47 +65,35 @@ real_estate <- read.csv("real_estate.csv", header=TRUE, stringsAsFactors=FALSE)
 real_estate$No <- NULL
 ```
 
+Jest to dośc mały zbiór, jednak w zupełności wystarczy do przetestowania poprawności działania algorytmów.
+
 =======
 ### Normalizacja i denormalizacja danych
 W celu poprawnego zastosowania metody kNN (k najbliższych sąsiadów) do ogreślenia zbioru terningowego dane muszą być uprzednio znormalizowane. Jest to wymagane, ponieważ algorytm kNN bazuje na funkcji odległości. Brak normalizacji sprawiłby, że jeden z atrybutów byłby wyróżniony ze względu na większy zakres wartosci. Stosuje się trzy rozdzaje normalizacji:
- - Liniowe przeskalowanie wartości do przedizału $[0-1]$ dla atrybutów ograniczonych (o ustalonych wartościach minimalnej i maksymalnej)
- - Przeskalowanie z użyciem rozkładu normalnego o średniej $Ex = 0$ i wariancji $\sigma^{2} = 1$. - dla wartości nieograniczonych
+ - Min-Max - liniowe przeskalowanie wartości do przedizału $[0-1]$ dla atrybutów ograniczonych (o ustalonych wartościach minimalnej i maksymalnej)
+ - Z-score - Przeskalowanie z użyciem rozkładu normalnego o średniej $E = 0$ i wariancji $\sigma^{2} = 1$. - dla wartości nieograniczonych: $x$
  - Przydzielenie wartości $[0-1]$ rozłożonych równomiernie dla atrybutów dyskretnych
  
-W pakiecie taka normalizacja może zostać wykonana automatycznie przez zastosowanie funckcji ``.
-
-```{r}
-source('localRegression.R')
-rs_model <- createLocalRegressionModel(real_estate, list("minmax","minmax","minmax","minmax","minmax","minmax","omit"))
-wrap(rs_model, real_estate[1,], 1, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
-wrap(rs_model, real_estate[1,], 10, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
-wrap(rs_model, real_estate[1,], 100, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
-wrap(rs_model, real_estate[1,], 200, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
-wrap(rs_model, real_estate[1,], 414, "cover_tree", lm, house.price.of.unit.area ~ house.age)[[1]]
-```
-```{r}
-source('localRegression.R')
-rs_model <- createLocalRegressionModel(real_estate, list("minmax","minmax","minmax","minmax","minmax","minmax","omit"))
-wrap(rs_model, real_estate[1,], 1, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-wrap(rs_model, real_estate[1,], 10, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-wrap(rs_model, real_estate[1,], 100, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-wrap(rs_model, real_estate[1,], 200, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-wrap(rs_model, real_estate[1,], 414, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-```
-```{r}
-source('localRegression.R')
-rs_model <- createLocalRegressionModel(real_estate, list("zscore","zscore","zscore","zscore","zscore","zscore","omit"))
-wrap(rs_model, real_estate[1,], 1, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-wrap(rs_model, real_estate[1,], 10, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-wrap(rs_model, real_estate[1,], 100, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-wrap(rs_model, real_estate[1,], 200, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-wrap(rs_model, real_estate[1,], 414, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]
-```
-
+W powstałym pakiecie taka normalizacja wykonywana jest automatycznie przy tworzeniu modelu lokalnej regresji oraz przy używaniu metod pozwalających na wykonanie jokalnej regresji.
 
 ## Implementacja
 
-!!!TUTAJ JAKIŚ ŁADNY WSTĘP!!!
+### Realizacja pakietu R
+Proponowane przez nas rozwiązanie dostarczone jest w postaci pakietu R o nazwie `mow.local.regression`. Pakiet udokumentowany jest z użyciem standardu dokumentacji pakietu R. Do dyspozycji użytkownika dostępne są następujące funkcje:
+ - `createLocalRegressionModel` - tworzy model lokalnej regresji na podstawie danych trenujących oraz wskazanych sposobów normalizacji
+ - `wrap` - pozwala na przeprowadzenie lokalnej regresji z użyciem wybranego algorytmu budowania modelu regresji
+ - `localLinearWrap` - pozwala na przeprowadzenie lokalnej regresji z użyciem modelu `lm`
+ - `regressionTreeWrap` - pozwala na przeprowadzenie lokalnej regresji z użyciem modelu `rpart` (drzewa regresji)
+Pozostałe nieprywatne funkcje w pakiecie są używane jako funkcje pomocnicze przez wyróżnione powyżel funkcje. Pozostały one jako funkcje nieprywatne ze względu na ich potencjalną użyteczność w innych problemach. Do tych funkcji należą:
+ - `normalizeDataFrame` - normalizuje `data.frame` z użyciem wskazanych metod normalizacji
+ - `normalizeEnumVector` - normalizuje tekstowy wektor enumeracyjny 
+ - `normalizeVector` - normalizuje wektor na podstawie modelu regresji lokalnej
+ - `splitDataFrame` - rozdziela `data.frame` na dwie `data.frame` (treningową i testową) we wskazanej proporcji
+ - `stripDependentVariable` - usuwa z `data.frame` zmienną zależną w podanej formule
+ 
+Pełną dokumentację wskazanych funkcji mozna uzyskać stosując polecenie `?functionName` w pakiecie R.
+
+### Implementacja algorytmów
 
 Funkcja `wrap` opakowuje funkcję do budowania modelu liniowego i dokonuje predykcji z
 użyciem modelu lokalnego wyznaczonego przez funkcję `get.knn`.
@@ -125,9 +112,36 @@ zostanie przekazana do funkcji `lm`.
 Tak samo jak `localLiner.wrap` funkcja `regressionTree.wrap` zapewnia proste opakowanie
 dla funkcji `rpart` z biblioteki `rpart`. 
 
-Funkcja `get.knn` przyjmuje zbiór treningowy, wektor `x` i znajduje `n` najbliższych
-sąsiadów w zbiorze treningowym dla wektora `x` używając wbudowanej funkcji `dist` i
-przekazując jej `dist_method`. 
+## Użycie pakietu
+przykładowy kod uzywający zaproponowany pakiet przedstawiono poniżej:
+```{r}
+library('mow.local.regression')
+real_estate <- read.csv("real_estate.csv", header=TRUE, stringsAsFactors=FALSE)
+real_estate$No <- NULL
+rs_model <- createLocalRegressionModel(real_estate, list("zscore","zscore","zscore","zscore","zscore","zscore","omit"))
+print(c("Expected value: ", real_estate[1,]$house.price.of.unit.area),quote = FALSE)
+print(c("For n=1:        ", wrap(rs_model, real_estate[1,], 1,   "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]), quote = FALSE)
+print(c("For n=10:       ", wrap(rs_model, real_estate[1,], 10,  "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]), quote = FALSE)
+print(c("For n=100:      ", wrap(rs_model, real_estate[1,], 100, "cover_tree", rpart, house.price.of.unit.area ~ house.age, method="anova")[[1]]), quote = FALSE)
+```
+
+## Metody regresji lokalnej z pakietu R
+### LOESS
+LOESS (_locally estimated scatterplot smoothing_) jest algorytmem pozwalającym na uzyskanie regresji lokalnej z użyciem wielomianów oraz metody kNN. Jego działanie opiera się na znalezieniu odpowiedniego otoczenia badanego punktu przy pomocy algorytmu kNN z użyciem metryki ważonej. Następnie przy użyciu znalezionego otoczenia wyznaczana jest wielomianowe dopasowanie funkcji do znalezionych punktów. Z dopasowaniej funkcji znajdowana jest oczekiwana wartość dla wektora dla którego poszukujemy przewidywanej wartości. Jest to gotowy algorytm pozwalający na regresję lokalną. Stosowany jest często do wygładzania wykresów oraz wygładzania sygnałów w zagadnieniach DSP (pod nazwą: filtr Savitzky–Golay'a). 
+
+## Wyniki i porównanie z metodami regresji lokalnej dostępnymi w pakiecie R
+```{r}
+source('localRegression.R')
+data <- splitDataFrame(real_estate, 0.9)
+rs_model <- createLocalRegressionModel(data$train, list("zscore","zscore","zscore","zscore","zscore","zscore","omit"))
+ns <- seq(1, 401, by=100)
+errs <- sapply(ns, function(x) { print(x); markClassifier(rs_model, data$test, regressionTreeWrap, x, house.price.of.unit.area ~ .)$testError}) # change the `mse` at the end to the value that you are interested in
+print(errs)
+plot(ns, errs$mse, xlab="#neighbours", ylab="mse", type="l")
+plot(ns, errs$mre, xlab="#neighbours", ylab="mse", type="l")
+plot(ns, errs$cod_old, xlab="#neighbours", ylab="mse", type="l")
+plot(ns, errs$cod, xlab="#neighbours", ylab="mse", type="l")
+```
 
 ### Model regresji liniowej
 
@@ -137,10 +151,3 @@ przekazując jej `dist_method`.
 
 !!! DAĆ WYNIKI !!!
 
-## Użycie pakietu
-
-## Metody regresji lokalnej z pakietu R
-### LOESS
-### LOWESS
-
-## Wyniki i porównanie z metodami regresji lokalnej dostępnymi w pakiecie R
