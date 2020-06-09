@@ -32,7 +32,7 @@ Dane pochodzą ze strony: [https://data.world/data-society/capital-bikeshare-201
 
 Zbiór zawiera 17379 przykładów dotyczących wypożyczeń rowerów w systemie wypożyczalni w Waszyngtonie. Dostępne są atrybuty związane z czasem wypożyczenia (dzień tygodnia, godzina), pogodą (temperatura, wilgotność, prędkość wiatru) oraz liczby wypożyczonych rowerów (użytkownicy zarejestrowani, użytkownicy niezarejestrowani, użytkownicy łącznie). W szczególności regresję można badać w zakresie łącznej liczby wypożyczeń. Zbiór wydaje się dość ciekawy do zbadania oraz jest wystarczająco duży.
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 bikes <- read.csv("https://query.data.world/s/jcpgkqdal2ztirvoahx5dmopkpzr7q", header=TRUE, stringsAsFactors=FALSE)
 bikes$Casual.Users <- NULL
 bikes$Registered.Users <- NULL
@@ -45,7 +45,7 @@ Dane pochodzą ze strony: [https://www.kaggle.com/c/usedcarvaluation]()
 
 Zbiór zawiera 70000 obserwacji (przykładów) dotyczących cen sprzedaży samochodów osobowych o określonej marce, wieku, pojemności silnika, mocy, przejechanej odległości oraz liczby poprzednich właścicieli. Wszystkie atrybuty poza marką są atrybutami ciągłymi (bądź dającymi się uciąglić). Atrybutem przywidywanym dla tego zbioru jest wartość samochodu.
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 cars <- read.csv("cars.csv", header=TRUE, stringsAsFactors=FALSE)
 cars$year <- NULL
 ```
@@ -56,7 +56,7 @@ Dane pochodzą ze strony: [https://www.kaggle.com/quantbruce/real-estate-price-p
 
 Zbiór zawiera 414 obserwacji dotyczących sprzedaży nieruchomości (domów i mieszkań) opisanych z użyciem daty transakcji, wieku nieruchomości, odległości od przystanku, liczby sklepów w okolicy, położenia geograficznego oraz ceny za jednostkę powierzchni. W przypadku tych danych będziemy przewidywać cenę za jednostkę powierzchni.
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 real_estate <- read.csv("real_estate.csv", header=TRUE, stringsAsFactors=FALSE)
 real_estate$No <- NULL
 ```
@@ -112,8 +112,9 @@ Funkcja normalizująca dane zastosowana w pakiecie obsługuje dane numeryczne or
 
 ## Użycie pakietu
 przykładowy kod uzywający zaproponowany pakiet przedstawiono poniżej:
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 library('mow.local.regression')
+library('rpart')
 real_estate <- read.csv("real_estate.csv", header=TRUE, stringsAsFactors=FALSE)
 real_estate$No <- NULL
 rs_model <- createLocalRegressionModel(real_estate, list("zscore","zscore","zscore","zscore","zscore","zscore","omit"))
@@ -141,7 +142,7 @@ zapewnionymi przez nasz pakiet.
 
 Do wygenerowania wykresów użyty został kod podobny do zapisanego poniżej.
 
-```{r eval=FALSE}
+```{r eval=FALSE, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 data <- splitDataFrame(real_estate, 0.9)
 rs_model <- createLocalRegressionModel(data$train, list("zscore","zscore","zscore","zscore","zscore","zscore","omit"))
 ns <- seq(1, 401, by=100)
@@ -167,7 +168,7 @@ Dla zbioru "Real Estate" przyjęliśmy rozmiar łączny zbioru za 414 rekordów 
 
 ![Histogram logarytmu dziesiętnego kwadratów błędu zbioru "Real Estate"](re_hist.png)
 
-Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10$ czyli sam błąd jest na poziomie $ \pm10^{0.5}$. Co jest dość sensownym oszacowaniem.
+Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10$ czyli sam błąd jest na poziomie $\pm 10^{0.5}$. Co jest dość sensownym oszacowaniem.
 
 
 ### Zbiór "Bikes"
@@ -181,7 +182,7 @@ Dla zbioru "bikes" przyjęliśmy rozmiar łączny zbioru za 1000 rekordów z pod
 
 ![Histogram logarytmu dziesiętnego kwadratów błędu zbioru "Bikes"](bikes_hsit.png)
 
-Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10^2$ czyli sam błąd jest na poziomie $ \pm10^1$. Jest to dość duży błąd oszacowania patrząc na wartości w zbiorze testowym.
+Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10^{2}$ czyli sam błąd jest na poziomie $\pm 10^{1}$. Jest to dość duży błąd oszacowania patrząc na wartości w zbiorze testowym.
 
 Przypuszczamy, że duże wartości błędów MSE pochodzą z pojawienia się w danych testowych wektora znacznie oddalonego od pozostałych wartości. Spowodowało to wyznaczenie znacznie większej wartości od oczekiwanej, co przy podniesieniu do kwadratu dało bardzo duży udział w błędzie. Potencjaln
 
@@ -196,12 +197,13 @@ Dla zbioru "Cars" przyjeliśmy rozmiar łaczny zbioru za 1000 rekordów z podzia
 
 ![Histogram logarytmu dziesiętnego kwadratów błędu zbioru "Cars"](cars_hist.png)
 
-Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10^6$ czyli sam błąd jest na poziomie $ \pm10^3$. Jak na wartość samochodu błąd na poziomie $10^3$ wydaje się całkiem sensownym oszacowaniem.
+Z histogramu widać, że większość kwadratów błędów mieści się na poziomie $10^{6}$ czyli sam błąd jest na poziomie $\pm 10^{3}$. Jak na wartość samochodu błąd na poziomie $10^{3}$ wydaje się całkiem sensownym oszacowaniem.
 
 
 Funkcje `lm` i `rpart` poradziły sobie następująco:
 
-=======
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "
 |           | lm estates | rpart estates | lm bikes | rpart bikes | lm cars   | rpart cars |
 |-----------|------------|---------------|----------|-------------|-----------|------------|
 | train mse | 77.52      | 45.81         | 20691.72 | 10505.44    | 36350873  | 698879842  |
@@ -210,8 +212,11 @@ Funkcje `lm` i `rpart` poradziły sobie następująco:
 | test mse  | 73.52      | 74.47         | 23001.75 | 14469.54    | 170134632 | 21159213   |
 | test mre  | 0.19       | 0.17          | 0.50     | 0.54        | -0.53     | 0.47       |
 | test cod  | 0.38       | 0.51          | -------- | 0.30        | 0.14      | 0.89       |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
 
-=======
+
 ## Podsumowanie
 
 Część implementacyjną projektu udało się przeprowadzić bez większych przeszkód (poza zmaganiami z nietypowymi zachowaniami R dla wektorów nazwanych). Część testowa została niestety mocno ograniczona przez wydajności komputerów na których dokonywaliśmy testów. Przy dużych zbiorach danych (>1000) dostawaliśmy błędy alokacji pamięci. Jest to jeden z powodów dla których nasze testy nie dały bardzo satysfakcjonujących rezultatów - zbiory danych były ciekawe do szukania w nich zależności i wykonania regresji, jednak dla tak małego podzbioru ciężko taką zależność znaleźć. Dodatkowo uzyskaliśmy znaczne błędy (w szczegółności MSE) które też z dużym prawdopodobieństwem pochodzą od zbyt małego zbioru danych treningowych. Jednak dla dostatecznie małych danych oraz wartościach o których możemy się domyślać co do zależności zaprojektowany algorytm sprawdza się całkiem dobrze.
